@@ -1,0 +1,56 @@
+import Link from 'next/link';
+import { buildMetadata } from '@/lib/seo';
+import Section from '@/components/Section';
+import JsonLd from '@/components/JsonLd';
+import { breadcrumbSchema } from '@/lib/schema';
+import { blogPosts } from '@/lib/blog-data';
+
+export const metadata = buildMetadata({
+  title: 'Blog',
+  description:
+    'Practical writing on data analytics, Power BI, custom software, and automation for Nigerian businesses — no jargon, no vendor pitch.',
+  path: '/blog',
+});
+
+function formatDate(iso: string) {
+  return new Date(iso).toLocaleDateString('en-NG', { year: 'numeric', month: 'long', day: 'numeric' });
+}
+
+export default function BlogIndexPage() {
+  return (
+    <>
+      <JsonLd data={breadcrumbSchema([{ name: 'Home', path: '/' }, { name: 'Blog', path: '/blog' }])} />
+
+      <Section tone="brand" className="pb-14 pt-16 sm:pt-20">
+        <p className="eyebrow text-accent-light">Blog</p>
+        <h1 className="mt-2 max-w-3xl font-display text-4xl font-bold sm:text-5xl">
+          Practical notes on data, software, and automation
+        </h1>
+        <p className="mt-4 max-w-2xl text-lg text-white/85">
+          Written for Nigerian business owners and operators — realistic, specific, and free of vendor pitching.
+        </p>
+      </Section>
+
+      <Section>
+        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          {blogPosts.map((post) => (
+            <Link
+              key={post.slug}
+              href={`/blog/${post.slug}`}
+              className="card flex flex-col justify-between transition hover:-translate-y-0.5 hover:shadow-soft"
+            >
+              <div>
+                <p className="text-xs font-medium text-ink/50">
+                  {formatDate(post.datePublished)} &middot; {post.readingTime}
+                </p>
+                <h2 className="mt-2 font-display text-lg font-bold leading-snug text-ink">{post.title}</h2>
+                <p className="mt-3 text-sm leading-relaxed text-ink/70">{post.excerpt}</p>
+              </div>
+              <span className="mt-6 text-sm font-semibold text-accent-teal">Read article &rarr;</span>
+            </Link>
+          ))}
+        </div>
+      </Section>
+    </>
+  );
+}
