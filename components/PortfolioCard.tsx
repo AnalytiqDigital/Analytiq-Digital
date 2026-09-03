@@ -46,13 +46,14 @@ export default function PortfolioCard({ item }: { item: PortfolioItem }) {
               alt={item.title} 
               fill 
               sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-              className="object-cover transition duration-300 group-hover:scale-105" 
+              // CHANGED: object-cover to object-contain and added p-4 for padding
+              className="object-contain p-4 transition duration-300 group-hover:scale-105" 
             />
           ) : (
             /* Fallback gradient if no image is uploaded */
             <span className="font-display text-sm font-semibold text-white/70">{item.category}</span>
           )}
-        </div>
+        </div>s
         
         <span className="eyebrow">{item.category}</span>
         <h3 className="mt-2 font-display text-lg font-bold leading-snug text-ink group-hover:text-brand">

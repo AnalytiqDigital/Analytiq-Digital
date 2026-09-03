@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import Image from 'next/image';
 import { notFound } from 'next/navigation';
 import { ExternalLink } from 'lucide-react';
 import { buildMetadata } from '@/lib/seo';
@@ -45,8 +46,20 @@ export default async function PortfolioDetailPage({ params }: { params: Promise<
 
       <Section>
         <div className="mx-auto max-w-3xl">
-          <div className="mb-8 flex aspect-video items-center justify-center rounded-2xl bg-brand-gradient">
-            <span className="font-display text-lg font-semibold text-white/70">{item.title}</span>
+          {/* UPDATED: Added relative, overflow-hidden, and the Image component */}
+          <div className="relative mb-8 flex aspect-video items-center justify-center overflow-hidden rounded-2xl bg-brand-gradient">
+            {item.image ? (
+              <Image 
+                src={item.image} 
+                alt={item.title} 
+                fill 
+                priority
+                sizes="(max-width: 800px) 100vw, 800px"
+                className="object-contain p-4 sm:p-8" 
+              />
+            ) : (
+              <span className="font-display text-lg font-semibold text-white/70">{item.title}</span>
+            )}
           </div>
 
           <p className="text-lg leading-relaxed text-ink/80">{item.description}</p>
