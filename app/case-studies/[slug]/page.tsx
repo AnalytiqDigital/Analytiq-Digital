@@ -1,34 +1,29 @@
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { buildMetadata } from '@/lib/seo';
-import { caseStudies, getCaseStudyBySlug } from '@/lib/case-studies-data';
-import { getServiceBySlug } from '@/lib/services-data';
+import { getCaseStudyBySlug } from '@/lib/queries';
 import Section from '@/components/Section';
 import CTA from '@/components/CTA';
 import JsonLd from '@/components/JsonLd';
 import { breadcrumbSchema } from '@/lib/schema';
 
-export function generateStaticParams() {
-  return caseStudies.map((cs) => ({ slug: cs.slug }));
-}
+export const dynamic = 'force-dynamic';
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  const caseStudy = getCaseStudyBySlug(slug);
+  const caseStudy = await getCaseStudyBySlug(slug);
   if (!caseStudy) return {};
   return buildMetadata({
     title: caseStudy.title,
-    description: caseStudy.metaDescription,
+    description: caseStudy.summary,
     path: `/case-studies/${caseStudy.slug}`,
   });
 }
 
 export default async function CaseStudyDetailPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  const caseStudy = getCaseStudyBySlug(slug);
+  const caseStudy = await getCaseStudyBySlug(slug);
   if (!caseStudy) notFound();
-
-  const relatedService = getServiceBySlug(caseStudy.serviceSlug);
 
   return (
     <>
@@ -64,7 +59,7 @@ export default async function CaseStudyDetailPage({ params }: { params: Promise<
           <div className="rounded-2xl border border-slate-200 bg-surface-off p-6">
             <h2 className="font-display text-xl font-bold text-ink">Results</h2>
             <ul className="mt-4 space-y-3">
-              {caseStudy.results.map((r) => (
+              {(caseStudy.results as string[]).map((r) => (
                 <li key={r} className="flex items-start gap-3 text-sm leading-relaxed text-ink/80">
                   <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-success" />
                   {r}
@@ -76,7 +71,7 @@ export default async function CaseStudyDetailPage({ params }: { params: Promise<
           <div>
             <h2 className="font-display text-xl font-bold text-ink">Tech used</h2>
             <div className="mt-3 flex flex-wrap gap-2">
-              {caseStudy.tech.map((tech) => (
+              {(caseStudy.tech as string[]).map((tech) => (
                 <span key={tech} className="rounded-full border border-brand/20 bg-white px-3 py-1.5 text-sm font-medium text-brand">
                   {tech}
                 </span>
@@ -84,11 +79,11 @@ export default async function CaseStudyDetailPage({ params }: { params: Promise<
             </div>
           </div>
 
-          {relatedService && (
+          {caseStudy.serviceSlug && (
             <p className="text-sm text-ink/70">
               This engagement was delivered as part of{' '}
-              <Link href={`/services/${relatedService.slug}`} className="font-semibold text-brand hover:underline">
-                {relatedService.name}
+              <Link href={`/services/${caseStudy.serviceSlug}`} className="font-semibold text-brand hover:underline">
+                our services
               </Link>
               .
             </p>
@@ -99,7 +94,7 @@ export default async function CaseStudyDetailPage({ params }: { params: Promise<
       <Section tone="off">
         <CTA
           title="Have a similar problem?"
-          subtitle="Book a free 15-minute consultation to talk through what a solution could look like for your business."
+          subtitle="Start a project to talk through what a solution could look like for your business."
         />
       </Section>
     </>

@@ -1,18 +1,13 @@
 'use client';
 
-import { useFormState, useFormStatus } from 'react-dom';
+import { useActionState } from 'react';
+import { useFormStatus } from 'react-dom';
 import { submitContactForm, type ContactFormState } from '@/app/contact/actions';
+import { services } from '@/lib/services-data';
 
 const initialState: ContactFormState = { status: 'idle' };
 
-const services = [
-  'Power BI & Data Analytics',
-  'Web Development',
-  'Custom Software Development',
-  'Business Automation',
-  'Inventory & POS Systems',
-  'Not sure yet',
-];
+const serviceOptions = [...services.map((s) => s.name), 'Not sure yet'];
 
 function SubmitButton() {
   const { pending } = useFormStatus();
@@ -24,7 +19,7 @@ function SubmitButton() {
 }
 
 export default function ContactForm() {
-  const [state, formAction] = useFormState(submitContactForm, initialState);
+  const [state, formAction] = useActionState(submitContactForm, initialState);
 
   return (
     <form action={formAction} className="space-y-5" noValidate>
@@ -93,7 +88,7 @@ export default function ContactForm() {
           className="w-full rounded-xl border border-slate-300 px-4 py-2.5 text-sm focus:border-brand focus:outline-none"
           defaultValue="Not sure yet"
         >
-          {services.map((s) => (
+          {serviceOptions.map((s) => (
             <option key={s} value={s}>
               {s}
             </option>
@@ -124,7 +119,7 @@ export default function ContactForm() {
           required
           rows={5}
           className="w-full rounded-xl border border-slate-300 px-4 py-2.5 text-sm focus:border-brand focus:outline-none"
-          placeholder="Tell me briefly what you're trying to fix or build."
+          placeholder="Tell us briefly what you're trying to fix or build."
         />
       </div>
 
@@ -132,7 +127,7 @@ export default function ContactForm() {
 
       {state.status === 'success' && (
         <p role="status" className="rounded-xl bg-success/10 px-4 py-3 text-sm font-medium text-success">
-          {state.message || "Thanks — I'll get back to you within one business day."}
+          {state.message || "Thanks — we'll get back to you within one business day."}
         </p>
       )}
       {state.status === 'error' && (

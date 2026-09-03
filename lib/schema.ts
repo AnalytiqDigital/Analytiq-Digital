@@ -3,11 +3,13 @@ import { siteConfig } from './site-config';
 export function organizationSchema() {
   return {
     '@context': 'https://schema.org',
-    '@type': 'ProfessionalService',
+    '@type': 'LocalBusiness',
     '@id': `${siteConfig.url}/#organization`,
     name: siteConfig.name,
     url: siteConfig.url,
     email: siteConfig.email,
+    logo: `${siteConfig.url}/logo.png`,
+    image: `${siteConfig.url}/logo.png`,
     founder: {
       '@type': 'Person',
       name: siteConfig.founder,
@@ -15,6 +17,7 @@ export function organizationSchema() {
     },
     address: {
       '@type': 'PostalAddress',
+      streetAddress: '20 Iko Ibrahim Way, Navy Estate, Karshi',
       addressLocality: siteConfig.city,
       addressRegion: siteConfig.region,
       addressCountry: siteConfig.countryCode,

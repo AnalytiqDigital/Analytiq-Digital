@@ -8,7 +8,7 @@ import { siteConfig } from '@/lib/site-config';
 export const metadata = buildMetadata({
   title: 'About',
   description:
-    'About Mekan Matthew, Founder & Lead Digital Transformation Consultant at Analytiq Digital — Power BI, custom software, and automation for Nigerian businesses.',
+    'About AnalytIQ Digital — a Nigerian technology and digital transformation company building websites, software, AI automation, and data analytics solutions.',
   path: '/about',
 });
 
@@ -31,7 +31,7 @@ const values = [
   {
     title: 'Built to be handed over',
     description:
-      'Documentation and training are part of every delivery, so your business is not permanently dependent on one consultant to keep the lights on.',
+      'Documentation and training are part of every delivery, so your business is not permanently dependent on us to keep the lights on.',
   },
 ];
 
@@ -42,7 +42,9 @@ const tools = [
   'Python',
   'React / Next.js',
   'Node.js',
+  'AI / LLM APIs',
   'n8n & workflow automation',
+  'WhatsApp Business API',
   'WordPress',
 ];
 
@@ -53,8 +55,8 @@ export default function AboutPage() {
 
       <Section tone="brand" className="pb-14 pt-16 sm:pt-20">
         <p className="eyebrow text-accent-light">About</p>
-        <h1 className="mt-2 font-display text-4xl font-bold sm:text-5xl">{siteConfig.founder}</h1>
-        <p className="mt-2 text-lg text-white/85">{siteConfig.founderTitle}</p>
+        <h1 className="mt-2 max-w-3xl font-display text-4xl font-bold sm:text-5xl">{siteConfig.name}</h1>
+        <p className="mt-3 max-w-2xl text-lg text-white/85">{siteConfig.tagline}</p>
       </Section>
 
       <Section>
@@ -63,16 +65,16 @@ export default function AboutPage() {
             <div className="mb-8 aspect-[4/3] w-full max-w-md rounded-2xl bg-surface-off ring-1 ring-slate-200" aria-hidden="true" />
             <div className="space-y-5 leading-relaxed text-ink/80">
               <p>
-                I run Analytiq Digital as an independent IT consulting practice based in Abuja, working with Nigerian businesses and institutions on the data, software, and automation problems that quietly cost the most time and money.
+                AnalytIQ Digital is a Nigerian technology and digital transformation company based in Abuja, working with businesses and institutions on the data, software, and automation problems that quietly cost the most time and money.
               </p>
               <p>
-                Most engagements start the same way: a business has grown past what spreadsheets and manual processes can reliably handle, but is not sure whether the fix is a dashboard, a piece of custom software, an automated workflow, or something simpler. My job starts before any tool is chosen — understanding the actual workflow, the actual decision being made, and the actual constraints of the team that has to use whatever gets built.
+                Most engagements start the same way: an organisation has grown past what spreadsheets and manual processes can reliably handle, but is not sure whether the fix is a dashboard, a piece of custom software, an AI-powered automation, or something simpler. Our work starts before any tool is chosen — understanding the actual workflow, the actual decision being made, and the actual constraints of the team that has to use whatever gets built.
               </p>
               <p>
-                My background spans data analytics and Power BI, full-stack web and software development, and business process automation. That range matters in practice: a lot of &ldquo;software problems&rdquo; are really data problems, and a lot of &ldquo;we need custom software&rdquo; requests are better solved with a focused automation instead. Working across all three means the recommendation fits the problem, not whichever service happens to be on offer.
+                Our work spans data analytics and Power BI, full-stack web and software development, AI automation, and WhatsApp-based customer assistants. That range matters in practice: a lot of &ldquo;software problems&rdquo; are really data problems, and a lot of &ldquo;we need custom software&rdquo; requests are better solved with a focused automation instead. Working across all of these means the recommendation fits the problem, not whichever service happens to be on offer.
               </p>
               <p>
-                I work directly with clients — no account managers, no handoffs between departments. The person you talk to during the discovery call is the person building and delivering the work.
+                We work directly with clients on every engagement — the people scoping the project are the people delivering it.
               </p>
             </div>
 
@@ -84,10 +86,16 @@ export default function AboutPage() {
                 </span>
               ))}
             </div>
+
+            <h2 className="mt-12 font-display text-2xl font-bold text-ink">Founder</h2>
+            <div className="mt-4 card max-w-md">
+              <p className="font-display text-lg font-bold text-ink">{siteConfig.founder}</p>
+              <p className="mt-1 text-sm font-semibold text-brand">{siteConfig.founderTitle}</p>
+            </div>
           </div>
 
           <aside>
-            <h2 className="font-display text-xl font-bold text-ink">How I approach the work</h2>
+            <h2 className="font-display text-xl font-bold text-ink">How we approach the work</h2>
             <div className="mt-5 space-y-5">
               {values.map((v) => (
                 <div key={v.title} className="card">
@@ -103,7 +111,7 @@ export default function AboutPage() {
       <Section tone="off">
         <CTA
           title="Have a specific problem in mind?"
-          subtitle="Book a free 15-minute consultation and I'll tell you honestly what I think the right approach is."
+          subtitle="Start a project and we'll tell you honestly what we think the right approach is."
         />
       </Section>
     </>

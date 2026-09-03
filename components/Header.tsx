@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { useState } from 'react';
 import { siteConfig } from '@/lib/site-config';
 
@@ -8,23 +9,25 @@ export default function Header() {
   const [open, setOpen] = useState(false);
 
   return (
-    <header className="sticky top-0 z-40 border-b border-slate-200 bg-white/95 backdrop-blur">
-      <div className="container-page flex h-16 items-center justify-between">
-        <Link href="/" className="flex items-center gap-2 font-display text-lg font-bold text-brand">
-          <span className="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-brand text-sm font-bold text-white">
-            AQ
-          </span>
-          <span>
-            Analyt<span className="text-accent-teal">IQ</span> Digital
-          </span>
+    <header className="sticky top-0 z-40 border-b border-slate-200/80 bg-white/90 backdrop-blur-md">
+      <div className="container-page flex h-16 items-center justify-between py-2 sm:h-20">
+        <Link href="/" className="flex items-center">
+          <Image
+            src="/logo.png"
+            alt="AnalytIQ Digital"
+            width={160}
+            height={107}
+            priority
+            className="h-12 w-auto object-contain sm:h-14"
+          />
         </Link>
 
-        <nav className="hidden items-center gap-7 lg:flex" aria-label="Primary">
+        <nav className="hidden items-center gap-6 lg:flex" aria-label="Primary">
           {siteConfig.nav.map((item) => (
             <Link
               key={item.href}
               href={item.href}
-              className="text-sm font-medium text-ink/80 hover:text-brand"
+              className="text-sm font-medium text-ink/75 transition hover:text-brand"
             >
               {item.label}
             </Link>
@@ -33,7 +36,7 @@ export default function Header() {
 
         <div className="hidden lg:block">
           <Link href="/contact" className="btn-primary">
-            Book Consultation
+            Start a Project
           </Link>
         </div>
 
@@ -47,19 +50,9 @@ export default function Header() {
         >
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
             {open ? (
-              <path
-                d="M6 6l12 12M18 6L6 18"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-              />
+              <path d="M6 6l12 12M18 6L6 18" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
             ) : (
-              <path
-                d="M4 7h16M4 12h16M4 17h16"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-              />
+              <path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
             )}
           </svg>
         </button>
@@ -78,12 +71,8 @@ export default function Header() {
                 {item.label}
               </Link>
             ))}
-            <Link
-              href="/contact"
-              className="btn-primary mt-2 w-full"
-              onClick={() => setOpen(false)}
-            >
-              Book Consultation
+            <Link href="/contact" className="btn-primary mt-2 w-full" onClick={() => setOpen(false)}>
+              Start a Project
             </Link>
           </nav>
         </div>

@@ -11,7 +11,7 @@ import { titleTemplate } from '@/lib/seo';
 export const metadata: Metadata = {
   metadataBase: new URL(siteConfig.url),
   title: {
-    default: titleTemplate('IT Consulting, Power BI & Custom Software for Nigerian Businesses'),
+    default: titleTemplate('AI, Software, Automation & Data Analytics'),
     template: `%s | ${siteConfig.name}`,
   },
   description: siteConfig.positioning,
@@ -19,12 +19,14 @@ export const metadata: Metadata = {
   authors: [{ name: siteConfig.founder }],
   generator: 'Next.js',
   keywords: [
+    'AI automation Nigeria',
     'Power BI consultant Nigeria',
     'software development Abuja',
+    'AI WhatsApp assistant Nigeria',
     'business automation Nigeria',
-    'inventory management system Nigeria',
     'web development Abuja',
     'data analytics consultant Nigeria',
+    'digital transformation Nigeria',
   ],
   openGraph: {
     type: 'website',
@@ -36,7 +38,8 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
   },
   icons: {
-    icon: '/favicon.ico',
+    icon: '/favicon-32.png',
+    apple: '/favicon-192.png',
   },
 };
 

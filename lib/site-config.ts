@@ -1,29 +1,34 @@
 export const siteConfig = {
-  name: 'Analytiq Digital',
-  legalName: 'Analytiq Digital',
-  shortName: 'Analytiq',
+  name: 'AnalytIQ Digital',
+  legalName: 'AnalytIQ Digital',
+  shortName: 'AnalytIQ',
+  tagline: 'Where Data Meets Intelligence',
   founder: 'Mekan Matthew',
   founderTitle: 'Founder & Lead Digital Transformation Consultant',
   positioning:
-    'I help Nigerian businesses and institutions turn data into decisions, automate operations, and ship reliable web & software systems — from Power BI dashboards to custom web apps and inventory solutions.',
+    'AnalytIQ Digital builds websites, custom software, AI automation, Power BI dashboards and intelligent digital solutions that help businesses work smarter and grow.',
   url: process.env.NEXT_PUBLIC_SITE_URL || 'https://www.analytiq.ng',
   email: process.env.NEXT_PUBLIC_CONTACT_EMAIL || 'hello@analytiq.ng',
   whatsappNumber: process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || '2348000000000',
   bookingUrl: process.env.NEXT_PUBLIC_BOOKING_URL || 'https://cal.com/analytiq-digital/15min',
+  address: '20 Iko Ibrahim Way, Navy Estate, Karshi, Abuja, FCT, Nigeria',
   city: 'Abuja',
   region: 'FCT',
   country: 'Nigeria',
   countryCode: 'NG',
+  googleReviewsUrl:
+    'https://www.google.com/search?sca_esv=f7ab54955f81add6&sxsrf=APpeQnta8kX8X1OGDUb1dTY2JWCAWHOXUQ%3A1788120130282&q=AnalytIQ%20Digital&stick=H4sIAAAAAAAAAONgU1I1qDA0MEk1SDMyTzUzMUhJSTO0MqgwTjWxNDIzS7JISUpJtUw1X8Qq4JiXmFNZ4hmo4JKZnlmSmAMAzXBg4jwAAAA&mat=CcVunrA0vD14&ved=2ahUKEwiHirnJksmWAxVWT0EAHTYMJoMQrMcEegQIFxAC',
   social: {
     linkedin: 'https://www.linkedin.com/company/analytiq-digital',
     x: 'https://x.com/analytiq_ng',
   },
   nav: [
+    { label: 'About', href: '/about' },
     { label: 'Services', href: '/services' },
+    { label: 'Solutions', href: '/solutions' },
+    { label: 'Portfolio', href: '/portfolio' },
     { label: 'Case Studies', href: '/case-studies' },
     { label: 'Blog', href: '/blog' },
-    { label: 'About', href: '/about' },
-    { label: 'Pricing', href: '/pricing' },
     { label: 'Contact', href: '/contact' },
   ],
 };
@@ -34,4 +39,4 @@ export function whatsappLink(message: string) {
 }
 
 export const defaultWhatsappMessage =
-  "Hi Analytiq Digital, I'd like to talk about a project.";
+  "Hi AnalytIQ Digital, I'd like to talk about a project.";

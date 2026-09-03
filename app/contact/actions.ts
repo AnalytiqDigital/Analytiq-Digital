@@ -1,5 +1,8 @@
 'use server';
 
+import { db } from '@/db';
+import { leads } from '@/db/schema';
+
 export interface ContactFormState {
   status: 'idle' | 'success' | 'error';
   message?: string;
@@ -55,22 +58,34 @@ export async function submitContactForm(
     };
   }
 
+  try {
+    await db.insert(leads).values({
+      name,
+      email,
+      phone: phone || null,
+      company: company || null,
+      serviceInterest: service || null,
+      budgetRange: budget || null,
+      message,
+      status: 'New',
+    });
+  } catch (err) {
+    console.error('Failed to save lead:', err);
+    return {
+      status: 'error',
+      message: 'Something went wrong saving your message. Please try WhatsApp or email instead.',
+    };
+  }
+
   // TODO: wire this up to an actual email delivery provider (e.g. Resend,
-  // Postmark) or a CRM webhook using RESEND_API_KEY / CONTACT_RECEIVING_EMAIL
-  // from the environment. Left as a clear integration point rather than a
-  // guessed provider, since this depends on what the client sets up.
-  console.log('New contact form submission:', {
-    name,
-    email,
-    phone,
-    company,
-    service,
-    budget,
-    message,
-  });
+  // Postmark) so the team is notified immediately, in addition to the lead
+  // being saved and visible in /admin/leads. Left as a clear integration
+  // point rather than a guessed provider, since this depends on what the
+  // client sets up. CONTACT_RECEIVING_EMAIL / RESEND_API_KEY are already
+  // reserved in .env.example for this.
 
   return {
     status: 'success',
-    message: "Thanks — I'll get back to you within one business day.",
+    message: "Thanks — we'll get back to you within one business day.",
   };
 }

@@ -4,16 +4,20 @@ import CaseStudyCard from '@/components/CaseStudyCard';
 import CTA from '@/components/CTA';
 import JsonLd from '@/components/JsonLd';
 import { breadcrumbSchema } from '@/lib/schema';
-import { caseStudies } from '@/lib/case-studies-data';
+import { getPublishedCaseStudies } from '@/lib/queries';
+
+export const dynamic = 'force-dynamic';
 
 export const metadata = buildMetadata({
   title: 'Case Studies',
   description:
-    'Real project outcomes for Nigerian businesses — Power BI dashboards, business automation, and custom inventory systems, with measurable results.',
+    'Real project outcomes for Nigerian businesses — Power BI dashboards, AI automation, and custom software, with measurable results.',
   path: '/case-studies',
 });
 
-export default function CaseStudiesPage() {
+export default async function CaseStudiesPage() {
+  const caseStudies = await getPublishedCaseStudies();
+
   return (
     <>
       <JsonLd data={breadcrumbSchema([{ name: 'Home', path: '/' }, { name: 'Case Studies', path: '/case-studies' }])} />
@@ -31,7 +35,7 @@ export default function CaseStudiesPage() {
       <Section>
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {caseStudies.map((cs) => (
-            <CaseStudyCard key={cs.slug} caseStudy={cs} />
+            <CaseStudyCard key={cs.slug} caseStudy={cs as any} />
           ))}
         </div>
       </Section>
@@ -39,7 +43,7 @@ export default function CaseStudiesPage() {
       <Section tone="off">
         <CTA
           title="Want a similar outcome for your business?"
-          subtitle="Book a free 15-minute consultation to talk through your specific situation."
+          subtitle="Start a project to talk through your specific situation."
         />
       </Section>
     </>

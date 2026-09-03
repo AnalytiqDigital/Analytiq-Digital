@@ -56,7 +56,7 @@ export default async function ServiceDetailPage({ params }: { params: Promise<{ 
         <p className="mt-4 max-w-2xl text-lg text-white/85">{service.heroSubhead}</p>
         <div className="mt-8 flex flex-col gap-3 sm:flex-row">
           <Link href="/contact" className="btn-primary">
-            Book a Free 15-Minute Consultation
+            Start a Project
           </Link>
           <span className="inline-flex items-center text-sm font-medium text-white/80">
             From {service.fromPrice}
