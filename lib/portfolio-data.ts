@@ -7,6 +7,7 @@ export interface PortfolioItem {
   description: string;
   technologies: string[];
   projectUrl?: string;
+  image?: string;
 }
 
 export const portfolioItems: PortfolioItem[] = [

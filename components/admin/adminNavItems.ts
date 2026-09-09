@@ -30,6 +30,7 @@ export const adminNavItems: AdminNavItem[] = [
   { href: '/admin/reviews', label: 'Google Reviews', icon: Star },
   { href: '/admin/blog', label: 'Blog', icon: Newspaper },
   { href: '/admin/leads', label: 'Leads', icon: Inbox },
+  { href: '/admin/visits', label: 'Visitor Feed', icon: Inbox },
   { href: '/admin/media', label: 'Media Library', icon: ImageIcon },
   { href: '/admin/settings', label: 'Settings', icon: Settings },
 ];

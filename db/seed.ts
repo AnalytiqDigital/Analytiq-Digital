@@ -15,7 +15,7 @@ async function seed() {
 
   // --- Admin user ---------------------------------------------------------
   const adminEmail = process.env.ADMIN_EMAIL || 'admin@analytiq.ng';
-  const adminPassword = process.env.ADMIN_PASSWORD || 'change-me-now';
+  const adminPassword = process.env.ADMIN_PASSWORD || 'ReplaceThisPasswordBeforeDeploying!';
 
   const existingUser = await db.query.users.findFirst({ where: (u, { eq }) => eq(u.email, adminEmail) });
   if (!existingUser) {

@@ -3,10 +3,12 @@ import { sql } from 'drizzle-orm';
 import { db } from '@/db';
 import { services, portfolioItems, blogPosts, leads, caseStudies, testimonials } from '@/db/schema';
 import { getSession } from '@/lib/auth';
+import { hasAdminAccess } from '@/lib/permissions';
 
 export async function GET() {
   const session = await getSession();
   if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  if (!hasAdminAccess(session.role)) return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
 
   const [servicesCount] = await db.select({ count: sql<number>`count(*)` }).from(services);
   const [portfolioCount] = await db.select({ count: sql<number>`count(*)` }).from(portfolioItems);

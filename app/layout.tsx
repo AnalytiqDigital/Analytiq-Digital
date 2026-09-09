@@ -4,6 +4,7 @@ import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import WhatsAppButton from '@/components/WhatsAppButton';
 import JsonLd from '@/components/JsonLd';
+import VisitorTracker from '@/components/VisitorTracker';
 import { organizationSchema, personSchema, websiteSchema } from '@/lib/schema';
 import { siteConfig } from '@/lib/site-config';
 import { titleTemplate } from '@/lib/seo';
@@ -55,6 +56,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           Skip to main content
         </a>
         <Header />
+        <VisitorTracker />
         <main id="main-content" className="flex-1">
           {children}
         </main>

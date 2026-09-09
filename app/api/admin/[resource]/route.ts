@@ -3,6 +3,7 @@ import { getTableColumns } from 'drizzle-orm';
 import { db } from '@/db';
 import { getSession } from '@/lib/auth';
 import { resourceTables, isValidResource, PROTECTED_COLUMNS } from '@/lib/admin-resources';
+import { hasAdminAccess, requireWriteAccess } from '@/lib/permissions';
 
 interface RouteParams {
   params: Promise<{ resource: string }>;
@@ -11,6 +12,7 @@ interface RouteParams {
 export async function GET(_request: Request, { params }: RouteParams) {
   const session = await getSession();
   if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  if (!hasAdminAccess(session.role)) return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
 
   const { resource } = await params;
   if (!isValidResource(resource)) return NextResponse.json({ error: 'Unknown resource' }, { status: 404 });
@@ -23,6 +25,8 @@ export async function GET(_request: Request, { params }: RouteParams) {
 export async function POST(request: Request, { params }: RouteParams) {
   const session = await getSession();
   if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  if (!hasAdminAccess(session.role)) return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+  if (!requireWriteAccess(session.role)) return NextResponse.json({ error: 'Insufficient permissions' }, { status: 403 });
 
   const { resource } = await params;
   if (!isValidResource(resource)) return NextResponse.json({ error: 'Unknown resource' }, { status: 404 });

@@ -3,10 +3,12 @@ import { eq } from 'drizzle-orm';
 import { db } from '@/db';
 import { siteSettings } from '@/db/schema';
 import { getSession } from '@/lib/auth';
+import { canManageSettings, hasAdminAccess } from '@/lib/permissions';
 
 export async function GET() {
   const session = await getSession();
   if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  if (!hasAdminAccess(session.role)) return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
 
   let settings = await db.query.siteSettings.findFirst();
   if (!settings) {
@@ -19,6 +21,8 @@ export async function GET() {
 export async function PUT(request: Request) {
   const session = await getSession();
   if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  if (!hasAdminAccess(session.role)) return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+  if (!canManageSettings(session.role)) return NextResponse.json({ error: 'Insufficient permissions' }, { status: 403 });
 
   const body = await request.json().catch(() => null);
   if (!body || typeof body !== 'object') {

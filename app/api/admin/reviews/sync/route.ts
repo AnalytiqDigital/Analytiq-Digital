@@ -3,10 +3,13 @@ import { db } from '@/db';
 import { reviews } from '@/db/schema';
 import { getSession } from '@/lib/auth';
 import { getGoogleReviews } from '@/lib/google-reviews';
+import { hasAdminAccess, requireWriteAccess } from '@/lib/permissions';
 
 export async function POST() {
   const session = await getSession();
   if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  if (!hasAdminAccess(session.role)) return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+  if (!requireWriteAccess(session.role)) return NextResponse.json({ error: 'Insufficient permissions' }, { status: 403 });
 
   const result = await getGoogleReviews();
 
@@ -44,6 +47,7 @@ export async function POST() {
 export async function GET() {
   const session = await getSession();
   if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  if (!hasAdminAccess(session.role)) return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
 
   const rows = await db.select().from(reviews);
   return NextResponse.json({ data: rows });

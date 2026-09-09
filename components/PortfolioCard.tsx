@@ -38,23 +38,20 @@ export default function PortfolioCard({ item }: { item: PortfolioItem }) {
       className="card group flex flex-col justify-between overflow-hidden transition hover:-translate-y-1 hover:shadow-glow"
     >
       <div>
-        {/* ADDED: relative and overflow-hidden classes to make the Next.js Image fill correctly */}
         <div className="relative mb-4 flex aspect-video items-center justify-center overflow-hidden rounded-xl bg-brand-gradient">
           {item.image ? (
-            <Image 
-              src={item.image} 
-              alt={item.title} 
-              fill 
+            <Image
+              src={item.image}
+              alt={item.title}
+              fill
               sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-              // CHANGED: object-cover to object-contain and added p-4 for padding
-              className="object-contain p-4 transition duration-300 group-hover:scale-105" 
+              className="object-contain p-4 transition duration-300 group-hover:scale-105"
             />
           ) : (
-            /* Fallback gradient if no image is uploaded */
             <span className="font-display text-sm font-semibold text-white/70">{item.category}</span>
           )}
-        </div>s
-        
+        </div>
+
         <span className="eyebrow">{item.category}</span>
         <h3 className="mt-2 font-display text-lg font-bold leading-snug text-ink group-hover:text-brand">
           {item.title}

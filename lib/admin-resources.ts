@@ -8,6 +8,7 @@ export const resourceTables = {
   testimonials: schema.testimonials,
   blog: schema.blogPosts,
   leads: schema.leads,
+  visits: schema.visitorEvents,
   media: schema.media,
 } as const;
 

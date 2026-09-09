@@ -132,6 +132,40 @@ export const leads = pgTable('leads', {
   createdAt: timestamp('created_at').notNull().defaultNow(),
 });
 
+// export const visitorEvents = pgTable('visitor_events', {
+//   id: serial('id').primaryKey(),
+//   page: text('page').notNull(),
+//   referrer: text('referrer'),
+//   source: text('source').notNull().default('direct'),
+//   campaign: text('campaign'),
+//   userAgent: text('user_agent'),
+//   ipAddress: text('ip_address'),
+//   createdAt: timestamp('created_at').notNull().defaultNow(),
+
+
+
+
+
+
+
+
+
+
+  
+// });
+
+export const visitorEvents = pgTable('visitor_events', {
+  id: serial('id').primaryKey(),
+  page: text('page').notNull(),
+  referrer: text('referrer'),
+  source: text('source').notNull().default('direct'),
+  campaign: text('campaign'),
+  userAgent: text('user_agent'),
+  ipAddress: text('ip_address'),
+  createdAt: timestamp('created_at').notNull().defaultNow(),
+});
+
+
 export const media = pgTable('media', {
   id: serial('id').primaryKey(),
   filename: text('filename').notNull(),
