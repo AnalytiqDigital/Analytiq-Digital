@@ -12,6 +12,8 @@ import PortfolioCard from '@/components/PortfolioCard';
 import ClientLogoSlider from '@/components/ClientLogoSlider';
 import ReviewsSection from '@/components/ReviewsSection';
 import CTA from '@/components/CTA';
+import EcosystemSection from '@/components/EcosystemSection';
+import Reveal from '@/components/Reveal';
 import FAQ from '@/components/FAQ';
 import JsonLd from '@/components/JsonLd';
 import { faqSchema } from '@/lib/schema';
@@ -69,11 +71,11 @@ export default async function HomePage() {
       <section className="relative overflow-hidden bg-brand-gradient text-white">
         <div className="pointer-events-none absolute inset-0 bg-grid-pattern bg-grid opacity-30" aria-hidden="true" />
         <div
-          className="pointer-events-none absolute -left-24 top-10 h-72 w-72 rounded-full bg-accent-teal/30 blur-3xl"
+          className="pointer-events-none absolute -left-24 top-10 h-72 w-72 animate-aurora rounded-full bg-accent-teal/30 blur-3xl"
           aria-hidden="true"
         />
         <div
-          className="pointer-events-none absolute -right-16 bottom-0 h-80 w-80 rounded-full bg-accent/20 blur-3xl"
+          className="pointer-events-none absolute -right-16 bottom-0 h-80 w-80 animate-aurora-slow rounded-full bg-accent/20 blur-3xl"
           aria-hidden="true"
         />
 
@@ -90,14 +92,14 @@ export default async function HomePage() {
               <Link href="/contact" className="btn-primary">
                 Start a Project <ArrowRight size={16} className="ml-2" />
               </Link>
-              <Link href="/services" className="btn-secondary">
-                Explore Our Services
-              </Link>
+              <a href={siteConfig.erpSignupUrl} className="btn-secondary">
+                Try AnalytIQ ERP Free
+              </a>
             </div>
           </div>
 
           <div className="relative">
-            <div className="glass-card animate-float">
+            <div className="ai-panel animate-float">
               <p className="eyebrow text-accent-light">What we deliver</p>
               <ul className="mt-4 space-y-3 text-sm text-white/85">
                 {services.slice(0, 5).map((s) => (
@@ -111,6 +113,8 @@ export default async function HomePage() {
           </div>
         </div>
       </section>
+
+      <EcosystemSection />
 
       {/* Trust bar */}
       <Section tone="off" className="py-10 sm:py-12">

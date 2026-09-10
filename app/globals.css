@@ -39,12 +39,48 @@
   .eyebrow {
     @apply text-xs font-semibold uppercase tracking-wider text-accent-teal;
   }
+  .ai-panel {
+    @apply relative overflow-hidden rounded-2xl border border-white/15 bg-white/5 p-6 backdrop-blur-md;
+  }
+  .ai-panel::after {
+    content: '';
+    @apply pointer-events-none absolute inset-x-0 top-0 h-16 animate-scanline bg-gradient-to-b from-accent-teal/20 to-transparent;
+  }
+  .ai-border {
+    @apply relative rounded-2xl bg-accent-gradient bg-[length:200%_auto] p-px animate-gradient-pan;
+  }
+  .ai-border > * {
+    @apply rounded-[calc(1.25rem-1px)] bg-white;
+  }
+  .text-gradient {
+    @apply bg-accent-gradient bg-[length:200%_auto] bg-clip-text text-transparent animate-gradient-pan;
+  }
+  .hover-lift {
+    @apply transition duration-300 hover:-translate-y-1 hover:shadow-glow;
+  }
   .glass-card {
     @apply rounded-2xl border border-white/15 bg-white/5 p-6 backdrop-blur-md;
   }
 }
 
+@layer utilities {
+  .reveal {
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1), transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .reveal-visible {
+    opacity: 1;
+    transform: none;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
+  .reveal {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+
   * {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;

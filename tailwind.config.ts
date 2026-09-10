@@ -86,11 +86,32 @@ const config: Config = {
           '0%, 100%': { transform: 'translateY(0px)' },
           '50%': { transform: 'translateY(-10px)' },
         },
+        aurora: {
+          '0%, 100%': { transform: 'translate3d(0,0,0) scale(1)', opacity: '0.55' },
+          '50%': { transform: 'translate3d(6%, -8%, 0) scale(1.25)', opacity: '0.85' },
+        },
+        shimmer: {
+          '0%': { backgroundPosition: '-200% 0' },
+          '100%': { backgroundPosition: '200% 0' },
+        },
+        scanline: {
+          '0%': { transform: 'translateY(-100%)' },
+          '100%': { transform: 'translateY(400%)' },
+        },
+        'gradient-pan': {
+          '0%, 100%': { backgroundPosition: '0% 50%' },
+          '50%': { backgroundPosition: '100% 50%' },
+        },
       },
       animation: {
         marquee: 'marquee 28s linear infinite',
         'pulse-glow': 'pulse-glow 3s ease-in-out infinite',
         float: 'float 6s ease-in-out infinite',
+        aurora: 'aurora 16s ease-in-out infinite',
+        'aurora-slow': 'aurora 24s ease-in-out infinite reverse',
+        shimmer: 'shimmer 3.5s linear infinite',
+        scanline: 'scanline 6s linear infinite',
+        'gradient-pan': 'gradient-pan 12s ease infinite',
       },
     },
   },

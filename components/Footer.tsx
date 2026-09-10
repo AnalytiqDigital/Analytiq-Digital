@@ -41,12 +41,26 @@ export default function Footer() {
         </div>
 
         <div>
-          <h3 className="mb-3 text-sm font-semibold uppercase tracking-wide text-white/90">Company</h3>
+          <h3 className="mb-3 text-sm font-semibold uppercase tracking-wide text-white/90">Ecosystem</h3>
+          <ul className="space-y-2 text-sm">
+            {siteConfig.ecosystem.map((item) => (
+              <li key={item.href}>
+                {item.external ? (
+                  <a href={item.href} className="hover:text-accent-light">{item.label}</a>
+                ) : (
+                  <Link href={item.href} className="hover:text-accent-light">{item.label}</Link>
+                )}
+              </li>
+            ))}
+          </ul>
+
+          <h3 className="mb-3 mt-6 text-sm font-semibold uppercase tracking-wide text-white/90">Company</h3>
           <ul className="space-y-2 text-sm">
             <li><Link href="/about" className="hover:text-accent-light">About</Link></li>
             <li><Link href="/portfolio" className="hover:text-accent-light">Portfolio</Link></li>
             <li><Link href="/case-studies" className="hover:text-accent-light">Case Studies</Link></li>
             <li><Link href="/blog" className="hover:text-accent-light">Blog</Link></li>
+            <li><Link href="/pricing" className="hover:text-accent-light">Pricing</Link></li>
             <li><Link href="/contact" className="hover:text-accent-light">Contact</Link></li>
           </ul>
         </div>
