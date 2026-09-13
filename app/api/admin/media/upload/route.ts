@@ -1,6 +1,4 @@
-import { mkdir, writeFile } from 'node:fs/promises';
-import { existsSync } from 'node:fs';
-import { join } from 'node:path';
+import { put } from '@vercel/blob';
 import { revalidatePath } from 'next/cache';
 import { NextResponse } from 'next/server';
 import { db } from '@/db';
@@ -40,22 +38,20 @@ export async function POST(request: Request) {
 
     const title = String(formData.get('title') || file.name || 'upload');
     const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, '-');
-    const uploadDir = join(process.cwd(), 'public', 'uploads');
 
-    if (!existsSync(uploadDir)) {
-      await mkdir(uploadDir, { recursive: true });
-    }
+    // Upload straight to Vercel Blob instead of local disk — this is what
+    // makes uploads survive on a serverless platform. `addRandomSuffix`
+    // avoids collisions if two files share the same name.
+    const blob = await put(safeName, file, {
+      access: 'public',
+      addRandomSuffix: true,
+    });
 
-    const filePath = join(uploadDir, safeName);
-    const bytes = await file.arrayBuffer();
-    await writeFile(filePath, Buffer.from(bytes));
-
-    const url = `/uploads/${safeName}`;
     const saved = await db
       .insert(media)
       .values({
         filename: safeName,
-        url,
+        url: blob.url,
         title,
         altText: title,
       })
@@ -64,7 +60,7 @@ export async function POST(request: Request) {
     revalidatePath('/admin');
     revalidatePath('/admin/media');
 
-    return NextResponse.json({ data: saved[0], url, filename: safeName }, { status: 200, headers: corsHeaders });
+    return NextResponse.json({ data: saved[0], url: blob.url, filename: safeName }, { status: 200, headers: corsHeaders });
   } catch (error) {
     console.error('Upload error:', error);
     return NextResponse.json({ error: 'Upload failed completely' }, { status: 500, headers: corsHeaders });
@@ -78,5 +74,3 @@ export async function PUT(request: Request) {
 export async function OPTIONS() {
   return NextResponse.json({ status: 'ok' }, { status: 200, headers: corsHeaders });
 }
-
-

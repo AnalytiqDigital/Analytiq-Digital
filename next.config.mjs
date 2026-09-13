@@ -61,6 +61,7 @@ const nextConfig = {
       { protocol: 'http', hostname: 'localhost', port: '3000' },
       { protocol: 'http', hostname: '127.0.0.1', port: '3000' },
       { protocol: 'http', hostname: '172.21.48.1', port: '3000' },
+      { protocol: 'https', hostname: '*.public.blob.vercel-storage.com' },
     ],
   },
   async headers() {
