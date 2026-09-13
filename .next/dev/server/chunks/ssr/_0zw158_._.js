@@ -1354,7 +1354,7 @@ const siteConfig = {
     founderTitle: 'Founder & Lead Digital Transformation Consultant',
     positioning: 'AnalytIQ Digital builds websites, custom software, AI automation, Power BI dashboards and intelligent digital solutions that help businesses work smarter and grow.',
     url: ("TURBOPACK compile-time value", "https://www.analytiq.ng") || 'https://www.analytiq.ng',
-    email: ("TURBOPACK compile-time value", "info@analytiq.ng") || 'hello@analytiq.ng',
+    email: ("TURBOPACK compile-time value", "info@analytiq.ng") || 'info@analytiq.ng',
     whatsappNumber: ("TURBOPACK compile-time value", "2348000000000") || '2348000000000',
     bookingUrl: ("TURBOPACK compile-time value", "https://cal.com/analytiq-digital/15min") || 'https://cal.com/analytiq-digital/15min',
     address: '20 Iko Ibrahim Way, Navy Estate, Karshi, Abuja, FCT, Nigeria',
@@ -3974,7 +3974,9 @@ function getImageProps(imgProps) {
                 ("TURBOPACK compile-time value", 384)
             ]),
             "qualities": ("TURBOPACK compile-time value", [
-                ("TURBOPACK compile-time value", 75)
+                ("TURBOPACK compile-time value", 75),
+                ("TURBOPACK compile-time value", 70),
+                ("TURBOPACK compile-time value", 70)
             ]),
             "path": ("TURBOPACK compile-time value", "/_next/image"),
             "loader": ("TURBOPACK compile-time value", "default"),

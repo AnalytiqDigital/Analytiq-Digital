@@ -8,7 +8,7 @@ export const siteConfig = {
   positioning:
     'AnalytIQ Digital builds websites, custom software, AI automation, Power BI dashboards and intelligent digital solutions that help businesses work smarter and grow.',
   url: process.env.NEXT_PUBLIC_SITE_URL || 'https://www.analytiq.ng',
-  email: process.env.NEXT_PUBLIC_CONTACT_EMAIL || 'hello@analytiq.ng',
+  email: process.env.NEXT_PUBLIC_CONTACT_EMAIL || 'info@analytiq.ng',
   whatsappNumber: process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || '2348000000000',
   bookingUrl: process.env.NEXT_PUBLIC_BOOKING_URL || 'https://cal.com/analytiq-digital/15min',
   address: '20 Iko Ibrahim Way, Navy Estate, Karshi, Abuja, FCT, Nigeria',

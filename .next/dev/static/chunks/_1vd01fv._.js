@@ -441,7 +441,7 @@ const siteConfig = {
     founderTitle: 'Founder & Lead Digital Transformation Consultant',
     positioning: 'AnalytIQ Digital builds websites, custom software, AI automation, Power BI dashboards and intelligent digital solutions that help businesses work smarter and grow.',
     url: ("TURBOPACK compile-time value", "https://www.analytiq.ng") || 'https://www.analytiq.ng',
-    email: ("TURBOPACK compile-time value", "info@analytiq.ng") || 'hello@analytiq.ng',
+    email: ("TURBOPACK compile-time value", "info@analytiq.ng") || 'info@analytiq.ng',
     whatsappNumber: ("TURBOPACK compile-time value", "2348000000000") || '2348000000000',
     bookingUrl: ("TURBOPACK compile-time value", "https://cal.com/analytiq-digital/15min") || 'https://cal.com/analytiq-digital/15min',
     address: '20 Iko Ibrahim Way, Navy Estate, Karshi, Abuja, FCT, Nigeria',

@@ -43,9 +43,10 @@ export async function POST(request: Request) {
     // makes uploads survive on a serverless platform. `addRandomSuffix`
     // avoids collisions if two files share the same name.
     const blob = await put(safeName, file, {
-      access: 'public',
-      addRandomSuffix: true,
-    });
+  access: 'public',
+  addRandomSuffix: true,
+  token: process.env.analytiq_READ_WRITE_TOKEN,
+});
 
     const saved = await db
       .insert(media)
