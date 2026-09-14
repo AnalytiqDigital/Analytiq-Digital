@@ -95,14 +95,14 @@ export default function Header() {
         </nav>
 
         <div className="hidden items-center gap-3 lg:flex">
-          <a
+          {/* <a
             href={siteConfig.erpUrl}
             className="text-sm font-semibold text-brand transition hover:text-accent-teal"
           >
             ERP Login
-          </a>
+          </a> */}
           <a href={siteConfig.erpSignupUrl} className="btn-primary">
-            Start Free
+          Explore AnalytIQ ERP
           </a>
         </div>
 

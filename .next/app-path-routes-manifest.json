@@ -2,6 +2,7 @@
   "/_global-error/page": "/_global-error",
   "/_not-found/page": "/_not-found",
   "/about/page": "/about",
+  "/academy/page": "/academy",
   "/admin/blog/page": "/admin/blog",
   "/admin/case-studies/page": "/admin/case-studies",
   "/admin/clients/page": "/admin/clients",
