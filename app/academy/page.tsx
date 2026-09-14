@@ -48,7 +48,7 @@ export default function AcademyPage() {
           >
             Join the waitlist
           </a>
-          <Link href="/erp" className="btn-secondary">
+          <Link href={siteConfig.erpUrl} className="btn-secondary">
             Explore AnalytIQ ERP
           </Link>
         </div>

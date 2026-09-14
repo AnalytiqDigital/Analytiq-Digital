@@ -31,7 +31,7 @@ export const siteConfig = {
     },
     {
       label: 'AnalytIQ Academy',
-      href: 'https://academy.analytiq.ng',
+      href: 'https://www.analytiq.ng/academy',
       description: 'Data, AI and digital skills training for teams and individuals.',
       external: true,
     },
