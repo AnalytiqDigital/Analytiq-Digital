@@ -50,7 +50,8 @@ export const siteConfig = {
   ],
   erpUrl: 'https://app.analytiq.ng',
   erpSignupUrl: 'https://app.analytiq.ng/auth?mode=signup',
-  academyUrl: 'https://analytiq.ng/academy',
+  academyUrl: '/academy',
+  
   nav: [
     { label: 'About', href: '/about' },
     { label: 'Services', href: '/services' },
@@ -60,7 +61,6 @@ export const siteConfig = {
     { label: 'Case Studies', href: '/case-studies' },
     { label: 'Blog', href: '/blog' },
     { label: 'Contact', href: '/contact' },
-   
     { label: 'ERP', href: 'https://app.analytiq.ng', external: true },
     
   ],

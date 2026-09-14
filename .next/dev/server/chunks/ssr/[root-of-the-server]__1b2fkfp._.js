@@ -235,14 +235,14 @@ function Header() {
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                         className: "hidden items-center gap-3 lg:flex",
-                        children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("a", {
+                        children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$client$2f$app$2d$dir$2f$link$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["default"], {
                             href: __TURBOPACK__imported__module__$5b$project$5d2f$lib$2f$site$2d$config$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["siteConfig"].academyUrl,
                             className: "btn-primary",
                             children: "Explore Academy"
                         }, void 0, false, {
                             fileName: "[project]/components/Header.tsx",
-                            lineNumber: 104,
-                            columnNumber: 11
+                            lineNumber: 98,
+                            columnNumber: 9
                         }, this)
                     }, void 0, false, {
                         fileName: "[project]/components/Header.tsx",
@@ -269,7 +269,7 @@ function Header() {
                                 strokeLinecap: "round"
                             }, void 0, false, {
                                 fileName: "[project]/components/Header.tsx",
-                                lineNumber: 119,
+                                lineNumber: 117,
                                 columnNumber: 15
                             }, this) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("path", {
                                 d: "M4 7h16M4 12h16M4 17h16",
@@ -278,17 +278,17 @@ function Header() {
                                 strokeLinecap: "round"
                             }, void 0, false, {
                                 fileName: "[project]/components/Header.tsx",
-                                lineNumber: 121,
+                                lineNumber: 119,
                                 columnNumber: 15
                             }, this)
                         }, void 0, false, {
                             fileName: "[project]/components/Header.tsx",
-                            lineNumber: 117,
+                            lineNumber: 115,
                             columnNumber: 11
                         }, this)
                     }, void 0, false, {
                         fileName: "[project]/components/Header.tsx",
-                        lineNumber: 109,
+                        lineNumber: 107,
                         columnNumber: 9
                     }, this)
                 ]
@@ -309,7 +309,7 @@ function Header() {
                             children: "Ecosystem"
                         }, void 0, false, {
                             fileName: "[project]/components/Header.tsx",
-                            lineNumber: 130,
+                            lineNumber: 128,
                             columnNumber: 13
                         }, this),
                         __TURBOPACK__imported__module__$5b$project$5d2f$lib$2f$site$2d$config$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["siteConfig"].ecosystem.map((item)=>item.external ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("a", {
@@ -319,7 +319,7 @@ function Header() {
                                 children: item.label
                             }, item.href, false, {
                                 fileName: "[project]/components/Header.tsx",
-                                lineNumber: 135,
+                                lineNumber: 133,
                                 columnNumber: 17
                             }, this) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$client$2f$app$2d$dir$2f$link$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["default"], {
                                 href: item.href,
@@ -328,7 +328,7 @@ function Header() {
                                 children: item.label
                             }, item.href, false, {
                                 fileName: "[project]/components/Header.tsx",
-                                lineNumber: 144,
+                                lineNumber: 142,
                                 columnNumber: 17
                             }, this)),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -336,7 +336,7 @@ function Header() {
                             children: "Company"
                         }, void 0, false, {
                             fileName: "[project]/components/Header.tsx",
-                            lineNumber: 155,
+                            lineNumber: 153,
                             columnNumber: 13
                         }, this),
                         __TURBOPACK__imported__module__$5b$project$5d2f$lib$2f$site$2d$config$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["siteConfig"].nav.map((item)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$client$2f$app$2d$dir$2f$link$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["default"], {
@@ -346,19 +346,9 @@ function Header() {
                                 children: item.label
                             }, item.href, false, {
                                 fileName: "[project]/components/Header.tsx",
-                                lineNumber: 159,
+                                lineNumber: 157,
                                 columnNumber: 15
                             }, this)),
-                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("a", {
-                            href: __TURBOPACK__imported__module__$5b$project$5d2f$lib$2f$site$2d$config$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["siteConfig"].erpUrl,
-                            className: "btn-outline mt-3 w-full",
-                            onClick: ()=>setOpen(false),
-                            children: "ERP Login"
-                        }, void 0, false, {
-                            fileName: "[project]/components/Header.tsx",
-                            lineNumber: 169,
-                            columnNumber: 13
-                        }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("a", {
                             href: __TURBOPACK__imported__module__$5b$project$5d2f$lib$2f$site$2d$config$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["siteConfig"].erpSignupUrl,
                             className: "btn-primary mt-2 w-full",
@@ -366,18 +356,18 @@ function Header() {
                             children: "Start Free"
                         }, void 0, false, {
                             fileName: "[project]/components/Header.tsx",
-                            lineNumber: 176,
+                            lineNumber: 168,
                             columnNumber: 13
                         }, this)
                     ]
                 }, void 0, true, {
                     fileName: "[project]/components/Header.tsx",
-                    lineNumber: 129,
+                    lineNumber: 127,
                     columnNumber: 11
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/components/Header.tsx",
-                lineNumber: 128,
+                lineNumber: 126,
                 columnNumber: 9
             }, this)
         ]
@@ -490,7 +480,7 @@ const siteConfig = {
     ],
     erpUrl: 'https://app.analytiq.ng',
     erpSignupUrl: 'https://app.analytiq.ng/auth?mode=signup',
-    academyUrl: 'https://analytiq.ng/academy',
+    academyUrl: '/academy',
     nav: [
         {
             label: 'About',
