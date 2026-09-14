@@ -1,0 +1,3 @@
+{
+  "/api/admin/reviews/sync/route": "app/api/admin/reviews/sync/route.js"
+}

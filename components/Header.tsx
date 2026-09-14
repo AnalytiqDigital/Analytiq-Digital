@@ -101,8 +101,8 @@ export default function Header() {
           >
             ERP Login
           </a> */}
-          <a href={siteConfig.erpSignupUrl} className="btn-primary">
-          Explore AnalytIQ ERP
+          <a href={siteConfig.academyUrl} className="btn-primary">
+          Explore Academy
           </a>
         </div>
 

@@ -47,7 +47,7 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en-NG">
-      <body className="flex min-h-screen flex-col font-sans">
+      <body className="flex min-h-screen flex-col font-sans" suppressHydrationWarning>
         <JsonLd data={[organizationSchema(), personSchema(), websiteSchema()]} />
         <a
           href="#main-content"
