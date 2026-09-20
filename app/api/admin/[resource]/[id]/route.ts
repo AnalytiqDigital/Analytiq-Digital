@@ -102,7 +102,7 @@ import { hasAdminAccess, requireWriteAccess } from '@/lib/permissions';
 
 export async function GET(
   _request: NextRequest,
-  context: { params: Promise<{ resource: string; id: string }> }
+  context: { params: Promise<any> }
 ) {
   const session = await getSession();
   if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
@@ -123,7 +123,7 @@ export async function GET(
 
 export async function PUT(
   request: NextRequest,
-  context: { params: Promise<{ resource: string; id: string }> }
+  context: { params: Promise<any> }
 ) {
   const session = await getSession();
   if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
@@ -147,7 +147,6 @@ export async function PUT(
     if (PROTECTED_COLUMNS.has(key)) continue;
     if (key in body) values[key] = body[key];
   }
-  // Auto-bump updatedAt if the table has that column.
   if ('updatedAt' in columns) {
     values.updatedAt = new Date();
   }
@@ -171,7 +170,7 @@ export async function PUT(
 
 export async function DELETE(
   _request: NextRequest,
-  context: { params: Promise<{ resource: string; id: string }> }
+  context: { params: Promise<any> }
 ) {
   const session = await getSession();
   if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
