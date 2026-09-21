@@ -48,6 +48,14 @@ const tools = [
   'WordPress',
 ];
 
+const founderCredentials = [
+  'BSc Banking and Finance',
+  '30 years business and entrepreneurship experience',
+  '20 years accounting, management and IT experience',
+  'Founder, AnalytIQ Digital Academy',
+  'Software developer, data analyst and AI engineer',
+];
+
 export default function AboutPage() {
   return (
     <>
@@ -89,8 +97,28 @@ export default function AboutPage() {
 
             <h2 className="mt-12 font-display text-2xl font-bold text-ink">Founder</h2>
             <div className="mt-4 card max-w-md">
+              <img
+                src="/founder.jpg"
+                alt={`${siteConfig.founder}, ${siteConfig.founderTitle}`}
+                width={640}
+                height={512}
+                className="mb-5 aspect-[5/4] w-full rounded-2xl object-cover ring-1 ring-slate-200"
+              />
               <p className="font-display text-lg font-bold text-ink">{siteConfig.founder}</p>
               <p className="mt-1 text-sm font-semibold text-brand">{siteConfig.founderTitle}</p>
+              <ul className="mt-4 space-y-2 text-sm leading-relaxed text-ink/70">
+                {founderCredentials.map((item) => (
+                  <li key={item}>{item}</li>
+                ))}
+              </ul>
+              <a
+                href={siteConfig.social.linkedin}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="mt-4 inline-block text-sm font-semibold text-brand hover:underline"
+              >
+                Connect on LinkedIn
+              </a>
             </div>
           </div>
 
