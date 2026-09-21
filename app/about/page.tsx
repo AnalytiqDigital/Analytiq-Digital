@@ -98,7 +98,7 @@ export default function AboutPage() {
             <h2 className="mt-12 font-display text-2xl font-bold text-ink">Founder</h2>
             <div className="mt-4 card max-w-md">
               <img
-                src="/founder.jpg"
+                src="/founder.png"
                 alt={`${siteConfig.founder}, ${siteConfig.founderTitle}`}
                 width={640}
                 height={512}
