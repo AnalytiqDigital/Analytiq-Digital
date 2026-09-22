@@ -90,7 +90,6 @@
 //   };
 // }
 
-
 'use server';
 
 import nodemailer from 'nodemailer';
@@ -100,11 +99,11 @@ export type ContactFormState = {
   message?: string;
 };
 
-// Use Zoho's TLS configuration (Port 587 is much more resilient on Vercel than 465)
+// Zoho Mail SMTP Transporter
 const transporter = nodemailer.createTransport({
   host: process.env.SMTP_HOST || 'smtppro.zoho.com',
   port: Number(process.env.SMTP_PORT) || 587,
-  secure: false, // false for 587 (uses STARTTLS)
+  secure: Number(process.env.SMTP_PORT) === 465, // true for 465, false for 587
   auth: {
     user: (process.env.SMTP_USER || 'info@analytiq.ng').trim(),
     pass: process.env.SMTP_PASSWORD ? process.env.SMTP_PASSWORD.trim().replace(/\s+/g, '') : '',
@@ -113,14 +112,14 @@ const transporter = nodemailer.createTransport({
     ciphers: 'SSLv3',
     rejectUnauthorized: false,
   },
-  connectionTimeout: 10000, // 10s timeout
+  connectionTimeout: 10000,
 });
 
 export async function submitContactForm(
   prevState: ContactFormState,
   formData: FormData
 ): Promise<ContactFormState> {
-  // Honeypot spam field check
+  // Honeypot spam protection
   const honeypot = formData.get('company_website');
   if (honeypot) {
     return { status: 'success', message: "Thanks — we'll get back to you shortly." };
@@ -138,23 +137,22 @@ export async function submitContactForm(
     return { status: 'error', message: 'Please fill in all required fields.' };
   }
 
-  // Diagnostic check for production logs
   if (!process.env.SMTP_PASSWORD) {
     console.error('CRITICAL: SMTP_PASSWORD is not set in environment variables!');
     return {
       status: 'error',
-      message: 'Server configuration error: email service not configured. Please contact support.',
+      message: 'Server configuration error: email service not configured.',
     };
   }
 
   try {
-    const info = await transporter.sendMail({
-      from: `"AnalytIQ Digital" <info@analytiq.ng>`, // MUST be info@analytiq.ng for Zoho
+    await transporter.sendMail({
+      from: `"AnalytIQ Website" <${process.env.SMTP_USER || 'info@analytiq.ng'}>`,
       to: 'info@analytiq.ng',
       replyTo: email,
-      subject: `New Inquiry from ${name} (${service})`,
+      subject: `New Lead: ${name} (${service})`,
       html: `
-        <div style="font-family: Arial, sans-serif; max-width: 600px; color: #1e293b; line-height: 1.6;">
+        <div style="font-family: Arial, sans-serif; max-width: 600px; line-height: 1.6; color: #1e293b;">
           <h2 style="color: #0f172a; border-bottom: 2px solid #e2e8f0; padding-bottom: 8px;">New Website Contact Inquiry</h2>
           <table style="width: 100%; border-collapse: collapse; margin-top: 12px;">
             <tr><td style="padding: 6px 0; font-weight: bold; width: 140px;">Name:</td><td>${name}</td></tr>
@@ -166,16 +164,15 @@ export async function submitContactForm(
           </table>
           <hr style="border: 0; border-top: 1px solid #e2e8f0; margin: 20px 0;" />
           <h3 style="margin-bottom: 6px; color: #0f172a;">Message:</h3>
-          <p style="background-color: #f8fafc; padding: 14px; border-radius: 8px; border: 1px solid #e2e8f0; white-space: pre-wrap;">${message}</p>
+          <p style="background-color: #f8fafc; padding: 16px; border-radius: 8px; border: 1px solid #e2e8f0; white-space: pre-wrap;">${message}</p>
         </div>
       `,
     });
 
-    console.log('Email sent successfully. Message ID:', info.messageId);
     return { status: 'success', message: "Thanks — we'll get back to you within one business day." };
   } catch (err: unknown) {
     const error = err as Error;
-    console.error('Zoho SMTP Send Error:', error.message || error);
+    console.error('Zoho SMTP error:', error.message || error);
     return {
       status: 'error',
       message: `Failed to deliver message (${error.message || 'SMTP Error'}). Please reach out directly to info@analytiq.ng.`,
