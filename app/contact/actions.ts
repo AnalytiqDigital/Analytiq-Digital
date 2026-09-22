@@ -92,34 +92,19 @@
 
 'use server';
 
-import nodemailer from 'nodemailer';
+import { Resend } from 'resend';
+
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 export type ContactFormState = {
   status: 'idle' | 'success' | 'error';
   message?: string;
 };
 
-// Zoho Mail SMTP Transporter
-const transporter = nodemailer.createTransport({
-  host: process.env.SMTP_HOST || 'smtppro.zoho.com',
-  port: Number(process.env.SMTP_PORT) || 587,
-  secure: Number(process.env.SMTP_PORT) === 465, // true for 465, false for 587
-  auth: {
-    user: (process.env.SMTP_USER || 'info@analytiq.ng').trim(),
-    pass: process.env.SMTP_PASSWORD ? process.env.SMTP_PASSWORD.trim().replace(/\s+/g, '') : '',
-  },
-  tls: {
-    ciphers: 'SSLv3',
-    rejectUnauthorized: false,
-  },
-  connectionTimeout: 10000,
-});
-
 export async function submitContactForm(
   prevState: ContactFormState,
   formData: FormData
 ): Promise<ContactFormState> {
-  // Honeypot spam protection
   const honeypot = formData.get('company_website');
   if (honeypot) {
     return { status: 'success', message: "Thanks — we'll get back to you shortly." };
@@ -137,18 +122,11 @@ export async function submitContactForm(
     return { status: 'error', message: 'Please fill in all required fields.' };
   }
 
-  if (!process.env.SMTP_PASSWORD) {
-    console.error('CRITICAL: SMTP_PASSWORD is not set in environment variables!');
-    return {
-      status: 'error',
-      message: 'Server configuration error: email service not configured.',
-    };
-  }
-
   try {
-    await transporter.sendMail({
-      from: `"AnalytIQ Website" <${process.env.SMTP_USER || 'info@analytiq.ng'}>`,
-      to: 'info@analytiq.ng',
+    const { data, error } = await resend.emails.send({
+      // Until domain is verified in Resend, use onboarding@resend.dev to test immediately
+      from: 'AnalytIQ Inquiries <onboarding@resend.dev>',
+      to: ['info@analytiq.ng'],
       replyTo: email,
       subject: `New Lead: ${name} (${service})`,
       html: `
@@ -169,13 +147,15 @@ export async function submitContactForm(
       `,
     });
 
+    if (error) {
+      console.error('Resend delivery error:', error);
+      return { status: 'error', message: `Delivery failed: ${error.message}` };
+    }
+
     return { status: 'success', message: "Thanks — we'll get back to you within one business day." };
   } catch (err: unknown) {
     const error = err as Error;
-    console.error('Zoho SMTP error:', error.message || error);
-    return {
-      status: 'error',
-      message: `Failed to deliver message (${error.message || 'SMTP Error'}). Please reach out directly to info@analytiq.ng.`,
-    };
+    console.error('Submission error:', error);
+    return { status: 'error', message: 'Failed to deliver message. Please try again.' };
   }
 }
