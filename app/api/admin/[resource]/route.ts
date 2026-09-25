@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getTableColumns } from 'drizzle-orm';
 import { db } from '@/db';
 import { getSession } from '@/lib/auth';
-import { resourceTables, isValidResource, PROTECTED_COLUMNS } from '@/lib/admin-resources';
+import { resourceTables, isValidResource, PROTECTED_COLUMNS, coerceColumnValue } from '@/lib/admin-resources';
 import { hasAdminAccess, requireWriteAccess } from '@/lib/permissions';
 
 export async function GET(
@@ -45,7 +45,7 @@ export async function POST(
   const values: Record<string, unknown> = {};
   for (const key of Object.keys(columns)) {
     if (PROTECTED_COLUMNS.has(key)) continue;
-    if (key in body) values[key] = body[key];
+    if (key in body) values[key] = coerceColumnValue((columns as any)[key], body[key]);
   }
 
   try {
