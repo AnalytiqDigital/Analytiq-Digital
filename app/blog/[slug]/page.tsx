@@ -38,7 +38,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
             title: post.title,
             description: post.seoDescription || post.excerpt,
             path: `/blog/${post.slug}`,
-            datePublished: post.publishedAt ? post.publishedAt.toISOString() : new Date().toISOString(),
+            datePublished: new Date(post.publishedAt ?? Date.now()).toISOString(),
           }),
           breadcrumbSchema([
             { name: 'Home', path: '/' },
