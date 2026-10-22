@@ -1,6 +1,7 @@
 import { drizzle } from 'drizzle-orm/postgres-js';
 import postgres from 'postgres';
 import * as schema from './schema';
+import * as waSchema from './schema-whatsapp';
 
 const databaseUrl = process.env.DATABASE_URL;
 if (!databaseUrl) {
@@ -14,4 +15,4 @@ const client = postgres(databaseUrl, {
   ssl: process.env.NODE_ENV === 'production' ? 'require' : undefined,
 });
 
-export const db = drizzle(client, { schema });
+export const db = drizzle(client, { schema: { ...schema, ...waSchema } });
