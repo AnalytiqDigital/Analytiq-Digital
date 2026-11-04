@@ -95,14 +95,10 @@ export default function Header() {
         </nav>
 
         <div className="hidden items-center gap-3 lg:flex">
-        <Link href={siteConfig.academyUrl} className="btn-primary">
-              Explore Academy
-       </Link>
+          <Link href="/book-a-consultation" className="btn-primary">
+            Book a Consultation
+          </Link>
         </div>
-
-
-
-        
 
         <button
           type="button"
@@ -164,14 +160,13 @@ export default function Header() {
               </Link>
             ))}
 
-           
-            <a
-              href={siteConfig.erpSignupUrl}
+            <Link
+              href="/book-a-consultation"
               className="btn-primary mt-2 w-full"
               onClick={() => setOpen(false)}
             >
-              Start Free
-            </a>
+              Book a Consultation
+            </Link>
           </nav>
         </div>
       )}

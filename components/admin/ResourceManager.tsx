@@ -1,7 +1,9 @@
 'use client';
 
 import { useEffect, useState, useCallback } from 'react';
-import { Plus, Pencil, Trash2, X } from 'lucide-react';
+import { Plus, Pencil, Trash2, X, Sparkles } from 'lucide-react';
+import DatePicker from '@/components/admin/DatePicker';
+import { toDateFieldValue } from '@/lib/date-field';
 
 export type FieldType = 'text' | 'textarea' | 'number' | 'url' | 'select' | 'boolean' | 'tags' | 'date';
 
@@ -27,6 +29,8 @@ interface ResourceManagerProps {
   columns: ColumnConfig[];
   fields: FieldConfig[];
   emptyLabel?: string;
+  /** Show a "Generate SEO with AI" button that reads the draft from `draftField`. */
+  aiAssist?: { draftField: string; titleField?: string };
 }
 
 function defaultValuesFor(fields: FieldConfig[]): Record<string, any> {
@@ -47,6 +51,8 @@ function rowToFormValues(row: Record<string, any>, fields: FieldConfig[]): Recor
       values[f.name] = Array.isArray(raw) ? raw.join(', ') : raw || '';
     } else if (f.type === 'boolean') {
       values[f.name] = Boolean(raw);
+    } else if (f.type === 'date') {
+      values[f.name] = toDateFieldValue(raw);
     } else {
       values[f.name] = raw ?? '';
     }
@@ -67,6 +73,8 @@ function formValuesToPayload(values: Record<string, any>, fields: FieldConfig[])
       payload[f.name] = val === '' ? null : Number(val);
     } else if (f.type === 'boolean') {
       payload[f.name] = Boolean(val);
+    } else if (f.type === 'date') {
+      payload[f.name] = val ? String(val) : null;
     } else {
       payload[f.name] = val;
     }
@@ -74,7 +82,7 @@ function formValuesToPayload(values: Record<string, any>, fields: FieldConfig[])
   return payload;
 }
 
-export default function ResourceManager({ resource, title, columns, fields, emptyLabel }: ResourceManagerProps) {
+export default function ResourceManager({ resource, title, columns, fields, emptyLabel, aiAssist }: ResourceManagerProps) {
   const [rows, setRows] = useState<Record<string, any>[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -82,6 +90,39 @@ export default function ResourceManager({ resource, title, columns, fields, empt
   const [editingId, setEditingId] = useState<number | null>(null);
   const [formValues, setFormValues] = useState<Record<string, any>>(defaultValuesFor(fields));
   const [saving, setSaving] = useState(false);
+  const [generating, setGenerating] = useState(false);
+
+  async function generateSeo() {
+    if (!aiAssist) return;
+    setGenerating(true);
+    setError(null);
+    try {
+      const res = await fetch('/api/admin/ai/seo', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          draft: formValues[aiAssist.draftField] ?? '',
+          title: aiAssist.titleField ? formValues[aiAssist.titleField] ?? '' : '',
+        }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data.error || 'AI generation failed');
+      const s = data.data;
+      setFormValues((prev) => ({
+        ...prev,
+        seoTitle: s.seoTitle || prev.seoTitle,
+        seoDescription: s.seoDescription || prev.seoDescription,
+        excerpt: s.excerpt || prev.excerpt,
+        seoKeywords: s.seoKeywords || prev.seoKeywords,
+        // Never change the URL of an existing post; only fill an empty slug.
+        slug: prev.slug ? prev.slug : s.slug || prev.slug,
+      }));
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'AI generation failed');
+    } finally {
+      setGenerating(false);
+    }
+  }
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -242,6 +283,17 @@ export default function ResourceManager({ resource, title, columns, fields, empt
             )}
 
             <form onSubmit={handleSubmit} className="space-y-4">
+              {aiAssist && (
+                <div className="rounded-xl border border-brand/30 bg-brand/5 p-3">
+                  <button type="button" onClick={generateSeo} disabled={generating} className="btn-outline w-full">
+                    <Sparkles size={16} className="mr-1.5" />
+                    {generating ? 'Generating…' : 'Generate SEO & excerpt with AI'}
+                  </button>
+                  <p className="mt-1.5 text-xs text-ink/50">
+                    Reads the article content and fills the excerpt, SEO title, description, keywords and (if empty) slug.
+                  </p>
+                </div>
+              )}
               {fields.map((field) => (
                 <div key={field.name}>
                   <label className="mb-1.5 block text-sm font-medium text-ink">
@@ -282,9 +334,15 @@ export default function ResourceManager({ resource, title, columns, fields, empt
                       />
                       Yes
                     </label>
+                  ) : field.type === 'date' ? (
+                    <DatePicker
+                      value={formValues[field.name] ?? ''}
+                      required={field.required}
+                      onChange={(v) => setFormValues((prev) => ({ ...prev, [field.name]: v }))}
+                    />
                   ) : (
                     <input
-                      type={field.type === 'number' ? 'number' : field.type === 'url' ? 'url' : field.type === 'date' ? 'date' : 'text'}
+                      type={field.type === 'number' ? 'number' : field.type === 'url' ? 'url' : 'text'}
                       required={field.required}
                       value={formValues[field.name] ?? ''}
                       onChange={(e) => setFormValues({ ...formValues, [field.name]: e.target.value })}

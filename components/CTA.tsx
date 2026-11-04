@@ -12,8 +12,8 @@ interface CTAProps {
 export default function CTA({
   title,
   subtitle,
-  primaryLabel = 'Start a Project',
-  primaryHref = '/contact',
+  primaryLabel = 'Book a Free Consultation',
+  primaryHref = '/book-a-consultation',
   showWhatsapp = true,
 }: CTAProps) {
   return (

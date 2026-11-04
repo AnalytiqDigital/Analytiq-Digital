@@ -17,7 +17,7 @@ export const siteConfig = {
   country: 'Nigeria',
   countryCode: 'NG',
   googleReviewsUrl:
-    'https://www.google.com/search?sca_esv=f7ab54955f81add6&sxsrf=APpeQnta8kX8X1OGDUb1dTY2JWCAWHOXUQ%3A1788120130282&q=AnalytIQ%20Digital&stick=H4sIAAAAAAAAAONgU1I1qDA0MEk1SDMyTzUzMUhJSTO0MqgwTjWxNDIzS7JISUpJtUw1X8Qq4JiXmFNZ4hmo4JKZnlmSmAMAzXBg4jwAAAA&mat=CcVunrA0vD14&ved=2ahUKEwiHirnJksmWAxVWT0EAHTYMJoMQrMcEegQIFxAC',
+    'https://www.google.com/search?sca_esv=f7ab54955f81add6&sxsraf=APqeQnta8kX8X1OGDUb1dTY2JWCAWHOXUQ%3A1788120130282&q=AnalytIQ%20Digital&stick=H4sIAAAAAAAAAONgU1I1qDA0MEk1SDMyTzUzMUhJSTO0MqgwTjWxNDIzS7JISUpJtUw1X8Qq4JiXmFNZ4hmo4JKZnlmSmAMAzXBg4jwAAAA&mat=CcVunrA0vD14&ved=2ahUKEwiHirnJksmWAxVWT0EAHTYMJoMQrMcEegQIFxAC',
   social: {
     linkedin: 'https://www.linkedin.com/company/analytiq-digital',
     x: 'https://x.com/analytiq_ng',
@@ -36,6 +36,18 @@ export const siteConfig = {
       external: true,
     },
     {
+      label: 'AI Automation',
+      href: '/ai-automation',
+      description: 'AI agents, WhatsApp assistants, workflow and business process automation.',
+      external: false,
+    },
+    {
+      label: 'Data Analytics',
+      href: '/data-analytics',
+      description: 'Power BI dashboards, automated reporting and business intelligence.',
+      external: false,
+    },
+    {
       label: 'Services',
       href: '/services',
       description: 'Custom software, AI automation, Power BI dashboards and websites.',
@@ -51,7 +63,7 @@ export const siteConfig = {
   erpUrl: 'https://app.analytiq.ng',
   erpSignupUrl: 'https://app.analytiq.ng/auth?mode=signup',
   academyUrl: '/academy',
-  
+
   nav: [
     { label: 'About', href: '/about' },
     { label: 'Services', href: '/services' },
@@ -62,7 +74,7 @@ export const siteConfig = {
     { label: 'Blog', href: '/blog' },
     { label: 'Contact', href: '/contact' },
     { label: 'ERP', href: 'https://app.analytiq.ng', external: true },
-    
+
   ],
 };
 

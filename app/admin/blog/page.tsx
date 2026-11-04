@@ -7,6 +7,7 @@ export default function AdminBlogPage() {
     <ResourceManager
       resource="blog"
       title="Blog"
+      aiAssist={{ draftField: 'content', titleField: 'title' }}
       columns={[
         { key: 'title', label: 'Title' },
         { key: 'category', label: 'Category' },
