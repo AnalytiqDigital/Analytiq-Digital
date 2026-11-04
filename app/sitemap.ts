@@ -15,6 +15,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${base}/services`, lastModified: now, changeFrequency: 'monthly', priority: 0.9 },
     { url: `${base}/solutions`, lastModified: now, changeFrequency: 'monthly', priority: 0.8 },
     { url: `${base}/ai-automation`, lastModified: now, changeFrequency: 'monthly', priority: 0.9 },
+    { url: `${base}/website-development-abuja`, lastModified: now, changeFrequency: 'monthly', priority: 0.9 },
+    { url: `${base}/whatsapp-ai-assistant-nigeria`, lastModified: now, changeFrequency: 'monthly', priority: 0.9 },
     { url: `${base}/data-analytics`, lastModified: now, changeFrequency: 'monthly', priority: 0.9 },
     { url: `${base}/book-a-consultation`, lastModified: now, changeFrequency: 'monthly', priority: 0.8 },
     { url: `${base}/portfolio`, lastModified: now, changeFrequency: 'monthly', priority: 0.8 },
@@ -22,8 +24,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${base}/blog`, lastModified: now, changeFrequency: 'weekly', priority: 0.7 },
     { url: `${base}/pricing`, lastModified: now, changeFrequency: 'monthly', priority: 0.8 },
     { url: `${base}/contact`, lastModified: now, changeFrequency: 'yearly', priority: 0.6 },
-    { url: `${base}/privacy`, lastModified: now, changeFrequency: 'yearly', priority: 0.1 },
-    { url: `${base}/terms`, lastModified: now, changeFrequency: 'yearly', priority: 0.1 },
   ];
 
   const serviceRoutes: MetadataRoute.Sitemap = services.map((s) => ({
