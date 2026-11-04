@@ -56,6 +56,8 @@ export default function Footer() {
 
           <h3 className="mb-3 mt-6 text-sm font-semibold uppercase tracking-wide text-white/90">Company</h3>
           <ul className="space-y-2 text-sm">
+            <li><Link href="/website-development-abuja" className="hover:text-accent-light">Website Developer in Abuja</Link></li>
+            <li><Link href="/whatsapp-ai-assistant-nigeria" className="hover:text-accent-light">WhatsApp AI Assistant</Link></li>
             <li><Link href="/about" className="hover:text-accent-light">About</Link></li>
             <li><Link href="/portfolio" className="hover:text-accent-light">Portfolio</Link></li>
             <li><Link href="/case-studies" className="hover:text-accent-light">Case Studies</Link></li>

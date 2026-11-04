@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { whatsappLink, defaultWhatsAppMessage } from '@/lib/site-config';
+import { whatsappLink, defaultWhatsappMessage } from '@/lib/site-config';
 
 interface CTAProps {
   title: string;
@@ -26,9 +26,9 @@ export default function CTA({
           <Link href={primaryHref} className="btn-primary">
             {primaryLabel}
           </Link>
-          {showWhatsApp && (
+          {showWhatsapp && (
             <a
-              href={whatsappLink(defaultWhatsAppMessage)}
+              href={whatsappLink(defaultWhatsappMessage)}
               target="_blank"
               rel="noopener noreferrer"
               className="btn-secondary"
