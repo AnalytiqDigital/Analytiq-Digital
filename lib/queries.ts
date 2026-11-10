@@ -1,4 +1,4 @@
-import { eq, and, lte, desc, asc } from 'drizzle-orm';
+import { eq, and, desc, asc, inArray } from 'drizzle-orm';
 import { db } from '@/db';
 import { services, portfolioItems, caseStudies, blogPosts, clients, testimonials } from '@/db/schema';
 
@@ -41,11 +41,15 @@ export async function getCaseStudyBySlug(slug: string) {
   });
 }
 
-/** Published blog posts whose publishedAt has passed (so "scheduled" posts stay hidden until their date). */
+/**
+ * Publicly visible posts: `published`, plus `scheduled` ones whose
+ * publishedAt has passed (so scheduling actually releases them — the admin
+ * "Publish now" button only ever sets `published`, never flips `scheduled`).
+ */
 export async function getPublishedBlogPosts() {
   const now = new Date();
   const rows = await db.query.blogPosts.findMany({
-    where: eq(blogPosts.status, 'published'),
+    where: inArray(blogPosts.status, ['published', 'scheduled']),
     orderBy: desc(blogPosts.publishedAt),
   });
   return rows.filter((p) => !p.publishedAt || p.publishedAt <= now);
@@ -54,7 +58,7 @@ export async function getPublishedBlogPosts() {
 export async function getBlogPostBySlug(slug: string) {
   const now = new Date();
   const post = await db.query.blogPosts.findFirst({
-    where: and(eq(blogPosts.slug, slug), eq(blogPosts.status, 'published')),
+    where: and(eq(blogPosts.slug, slug), inArray(blogPosts.status, ['published', 'scheduled'])),
   });
   if (!post) return undefined;
   if (post.publishedAt && post.publishedAt > now) return undefined;

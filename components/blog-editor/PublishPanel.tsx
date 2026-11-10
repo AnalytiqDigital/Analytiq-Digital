@@ -217,12 +217,14 @@ export default function PublishPanel({
   );
 }
 
-export function metaToFormPatch(meta: MetaResult): Partial<PublishForm> {
+export function metaToFormPatch(meta: MetaResult, currentSlug?: string): Partial<PublishForm> {
   return {
     seoTitle: meta.seoTitle,
     seoDescription: meta.seoDescription,
     excerpt: meta.excerpt,
     seoKeywords: meta.seoKeywords,
-    slug: meta.slug,
+    // Never clobber a slug the author already set (published URLs, manual edits).
+    // Only suggest one when the form doesn't have one yet.
+    slug: currentSlug ? currentSlug : meta.slug,
   };
 }

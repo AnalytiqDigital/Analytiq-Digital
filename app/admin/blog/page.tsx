@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { Plus, Pencil, Trash2 } from 'lucide-react';
 import { toDateFieldValue } from '@/lib/date-field';
+import { fetchJson } from '@/lib/fetch-json';
 
 interface PostRow {
   id: number;
@@ -33,9 +34,7 @@ export default function AdminBlogPage() {
     setLoading(true);
     setError(null);
     try {
-      const res = await fetch('/api/admin/blog');
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || 'Failed to load posts');
+      const data = await fetchJson<{ data?: PostRow[] }>('/api/admin/blog');
       setRows(data.data || []);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to load posts');
@@ -52,9 +51,7 @@ export default function AdminBlogPage() {
     setCreating(true);
     setError(null);
     try {
-      const res = await fetch('/api/admin/blog', { method: 'POST' });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || 'Could not create post');
+      const data = await fetchJson<{ data: { id: number } }>('/api/admin/blog', { method: 'POST' });
       router.push(`/admin/blog/${data.data.id}/edit`);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Could not create post');
@@ -65,11 +62,7 @@ export default function AdminBlogPage() {
   async function handleDelete(id: number, title: string) {
     if (!confirm(`Delete "${title}"? This cannot be undone.`)) return;
     try {
-      const res = await fetch(`/api/admin/blog/${id}`, { method: 'DELETE' });
-      if (!res.ok) {
-        const data = await res.json();
-        throw new Error(data.error || 'Delete failed');
-      }
+      await fetchJson(`/api/admin/blog/${id}`, { method: 'DELETE' });
       await load();
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Delete failed');

@@ -36,6 +36,10 @@ export function safeUrl(url: unknown): string | null {
   const trimmed = url.trim();
   if (/^https?:\/\/[^\s"'<>]+$/i.test(trimmed)) return trimmed;
   if (/^mailto:[^\s"'<>]+$/i.test(trimmed)) return trimmed;
+  // Internal links: /contact, /blog/slug, #anchors. Reject protocol-relative
+  // URLs (//evil.com) — they inherit the page scheme and can exfiltrate.
+  if (/^\/(?!\/)[^\s"'<>]*$/.test(trimmed)) return trimmed;
+  if (/^#[^\s"'<>]*$/.test(trimmed)) return trimmed;
   return null;
 }
 

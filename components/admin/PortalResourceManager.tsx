@@ -3,6 +3,7 @@
 import { useEffect, useState, useCallback } from 'react';
 import { Plus, Pencil, Trash2, X } from 'lucide-react';
 import DatePicker from '@/components/admin/DatePicker';
+import { fetchJson } from '@/lib/fetch-json';
 
 export type FieldType = 'text' | 'textarea' | 'number' | 'url' | 'select' | 'boolean' | 'tags' | 'date';
 
@@ -93,9 +94,9 @@ export default function PortalResourceManager({
     setLoading(true);
     setError(null);
     try {
-      const res = await fetch(`/api/admin/portal/${resource}${extraQuery ? `?${extraQuery}` : ''}`);
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || 'Failed to load');
+      const data = await fetchJson<{ data?: Record<string, any>[] }>(
+        `/api/admin/portal/${resource}${extraQuery ? `?${extraQuery}` : ''}`,
+      );
       setRows(data.data || []);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to load records');
@@ -128,9 +129,10 @@ export default function PortalResourceManager({
     const url = editingId ? `/api/admin/portal/${resource}/${editingId}` : `/api/admin/portal/${resource}`;
     const method = editingId ? 'PUT' : 'POST';
     try {
-      const res = await fetch(url, { method, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || 'Save failed');
+      const data = await fetchJson<{ data: Record<string, any>; extra?: Record<string, unknown> }>(
+        url,
+        { method, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) },
+      );
       if (data.extra && extraNotice) {
         setNotice(extraNotice(data.extra, data.data));
         setFormOpen(false);
@@ -149,11 +151,7 @@ export default function PortalResourceManager({
   async function handleDelete(id: number) {
     if (!confirm('Delete this record? This cannot be undone.')) return;
     try {
-      const res = await fetch(`/api/admin/portal/${resource}/${id}`, { method: 'DELETE' });
-      if (!res.ok) {
-        const data = await res.json();
-        throw new Error(data.error || 'Delete failed');
-      }
+      await fetchJson(`/api/admin/portal/${resource}/${id}`, { method: 'DELETE' });
       await load();
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Delete failed');

@@ -14,55 +14,61 @@ import {
 import { hashPortalPassword } from '@/lib/portal-auth';
 import { InvalidFieldError } from '@/lib/admin-resources';
 import { portalProjects } from '@/db/schema-portal';
+import { toErrorResponse } from '@/lib/route-error';
 
 interface RouteParams {
   params: Promise<{ resource: string; id: string }>;
 }
 
 export async function GET(_request: NextRequest, { params }: RouteParams) {
-  const session = await getSession();
-  if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-  if (!hasAdminAccess(session.role)) return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+  try {
+    const session = await getSession();
+    if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    if (!hasAdminAccess(session.role)) return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
 
-  const { resource, id } = await params;
-  if (!isValidPortalResource(resource)) return NextResponse.json({ error: 'Unknown resource' }, { status: 404 });
+    const { resource, id } = await params;
+    if (!isValidPortalResource(resource)) return NextResponse.json({ error: 'Unknown resource' }, { status: 404 });
 
-  const table = portalResourceTables[resource];
-  const columns = getTableColumns(table as any);
-  const idColumn = (columns as any).id;
+    const table = portalResourceTables[resource];
+    const columns = getTableColumns(table as any);
+    const idColumn = (columns as any).id;
 
-  const rows = await db.select().from(table as any).where(eq(idColumn, Number(id))).limit(1);
-  if (rows.length === 0) return NextResponse.json({ error: 'Not found' }, { status: 404 });
-  return NextResponse.json({ data: sanitizePortalRow(resource, rows[0]) });
+    const rows = await db.select().from(table as any).where(eq(idColumn, Number(id))).limit(1);
+    if (rows.length === 0) return NextResponse.json({ error: 'Not found' }, { status: 404 });
+    return NextResponse.json({ data: sanitizePortalRow(resource, rows[0]) });
+  } catch (err) {
+    return toErrorResponse(err, 'Failed to load record.');
+  }
 }
 
 export async function PUT(request: NextRequest, { params }: RouteParams) {
-  const session = await getSession();
-  if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-  if (!hasAdminAccess(session.role)) return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
-  if (!requireWriteAccess(session.role)) return NextResponse.json({ error: 'Insufficient permissions' }, { status: 403 });
-
-  const { resource, id } = await params;
-  if (!isValidPortalResource(resource)) return NextResponse.json({ error: 'Unknown resource' }, { status: 404 });
-
-  const table = portalResourceTables[resource];
-  const columns = getTableColumns(table as any);
-  const idColumn = (columns as any).id;
-
-  const body = await request.json().catch(() => null);
-  if (!body || typeof body !== 'object') {
-    return NextResponse.json({ error: 'Invalid request body' }, { status: 400 });
-  }
-
-  // Capture milestone status before update so completion stubs fire once.
-  let milestoneBefore: any = null;
-  if (resource === 'milestones') {
-    const before = await db.select().from(table as any).where(eq(idColumn, Number(id))).limit(1);
-    milestoneBefore = before[0] ?? null;
-  }
-
   try {
-    const values = await preparePortalUpdate(resource, body, hashPortalPassword, Number(id));
+    const session = await getSession();
+    if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    if (!hasAdminAccess(session.role)) return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+    if (!requireWriteAccess(session.role)) return NextResponse.json({ error: 'Insufficient permissions' }, { status: 403 });
+
+    const { resource, id } = await params;
+    if (!isValidPortalResource(resource)) return NextResponse.json({ error: 'Unknown resource' }, { status: 404 });
+
+    const table = portalResourceTables[resource];
+    const columns = getTableColumns(table as any);
+    const idColumn = (columns as any).id;
+
+    const body = await request.json().catch(() => null);
+    if (!body || typeof body !== 'object') {
+      return NextResponse.json({ error: 'Invalid request body' }, { status: 400 });
+    }
+
+    // Capture milestone status before update so completion stubs fire once.
+    let milestoneBefore: any = null;
+    if (resource === 'milestones') {
+      const before = await db.select().from(table as any).where(eq(idColumn, Number(id))).limit(1);
+      milestoneBefore = before[0] ?? null;
+    }
+
+    try {
+      const values = await preparePortalUpdate(resource, body, hashPortalPassword, Number(id));
     const updated = (await db
       .update(table as any)
       .set(values)
@@ -93,43 +99,47 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
       }
     }
 
-    return NextResponse.json({ data: sanitizePortalRow(resource, updated[0]), ...(extra ? { extra } : {}) }, { status: 200 });
+      return NextResponse.json({ data: sanitizePortalRow(resource, updated[0]), ...(extra ? { extra } : {}) }, { status: 200 });
+    } catch (err) {
+      if (err instanceof InvalidFieldError) return NextResponse.json({ error: err.message, field: err.field }, { status: 400 });
+      throw err;
+    }
   } catch (err) {
-    if (err instanceof InvalidFieldError) return NextResponse.json({ error: err.message, field: err.field }, { status: 400 });
-    return NextResponse.json(
-      { error: err instanceof Error ? err.message : 'Failed to update record' },
-      { status: 400 },
-    );
+    return toErrorResponse(err, 'Failed to update record.');
   }
 }
 
 export async function DELETE(_request: NextRequest, { params }: RouteParams) {
-  const session = await getSession();
-  if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-  if (!hasAdminAccess(session.role)) return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
-  if (!requireWriteAccess(session.role)) return NextResponse.json({ error: 'Insufficient permissions' }, { status: 403 });
+  try {
+    const session = await getSession();
+    if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    if (!hasAdminAccess(session.role)) return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+    if (!requireWriteAccess(session.role)) return NextResponse.json({ error: 'Insufficient permissions' }, { status: 403 });
 
-  const { resource, id } = await params;
-  if (!isValidPortalResource(resource)) return NextResponse.json({ error: 'Unknown resource' }, { status: 404 });
+    const { resource, id } = await params;
+    if (!isValidPortalResource(resource)) return NextResponse.json({ error: 'Unknown resource' }, { status: 404 });
 
-  const table = portalResourceTables[resource];
-  const columns = getTableColumns(table as any);
-  const idColumn = (columns as any).id;
+    const table = portalResourceTables[resource];
+    const columns = getTableColumns(table as any);
+    const idColumn = (columns as any).id;
 
-  // Capture projectId before deleting a milestone so progress stays correct.
-  let milestoneProjectId: number | null = null;
-  if (resource === 'milestones') {
-    const rows = await db.select().from(table as any).where(eq(idColumn, Number(id))).limit(1);
-    if (rows.length === 0) return NextResponse.json({ error: 'Not found' }, { status: 404 });
-    milestoneProjectId = (rows[0] as any).projectId ?? null;
+    // Capture projectId before deleting a milestone so progress stays correct.
+    let milestoneProjectId: number | null = null;
+    if (resource === 'milestones') {
+      const rows = await db.select().from(table as any).where(eq(idColumn, Number(id))).limit(1);
+      if (rows.length === 0) return NextResponse.json({ error: 'Not found' }, { status: 404 });
+      milestoneProjectId = (rows[0] as any).projectId ?? null;
+    }
+
+    const deleted = (await db.delete(table as any).where(eq(idColumn, Number(id))).returning()) as any[];
+    if (deleted.length === 0) return NextResponse.json({ error: 'Not found' }, { status: 404 });
+
+    if (resource === 'milestones' && milestoneProjectId != null) {
+      await recomputeProjectProgress(milestoneProjectId);
+    }
+
+    return NextResponse.json({ data: sanitizePortalRow(resource, deleted[0]) });
+  } catch (err) {
+    return toErrorResponse(err, 'Delete failed.');
   }
-
-  const deleted = (await db.delete(table as any).where(eq(idColumn, Number(id))).returning()) as any[];
-  if (deleted.length === 0) return NextResponse.json({ error: 'Not found' }, { status: 404 });
-
-  if (resource === 'milestones' && milestoneProjectId != null) {
-    await recomputeProjectProgress(milestoneProjectId);
-  }
-
-  return NextResponse.json({ data: sanitizePortalRow(resource, deleted[0]) });
 }
