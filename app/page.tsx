@@ -89,7 +89,9 @@ export default async function HomePage() {
               <Sparkles size={14} /> AI-Powered Digital Transformation
             </span>
             <h1 className="headline-glow mt-5 font-display text-4xl font-bold leading-tight sm:text-5xl">
-              <StaggerWords text={siteConfig.tagline} baseDelay={150} step={95} />
+              <StaggerWords text="Websites, Software, AI & Analytics" baseDelay={150} step={95} />
+              <br />
+              <StaggerWords text="That Grow Your Business" baseDelay={625} step={95} className="text-brand" />
             </h1>
             <CinematicReveal delay={650} y={20}>
               <p className="mt-5 max-w-xl text-lg leading-relaxed text-white/85">{siteConfig.positioning}</p>
