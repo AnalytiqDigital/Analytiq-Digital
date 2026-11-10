@@ -1,9 +1,10 @@
 import Link from 'next/link';
+import type { ReactNode } from 'react';
 import { whatsappLink, defaultWhatsappMessage } from '@/lib/site-config';
 
 interface CTAProps {
   title: string;
-  subtitle?: string;
+  subtitle?: ReactNode;
   primaryLabel?: string;
   primaryHref?: string;
   showWhatsapp?: boolean;

@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { Globe, Cpu, BarChart3, Code2, MessageCircle, Compass, type LucideIcon } from 'lucide-react';
 import type { ServiceData } from '@/lib/services-data';
+import Price from '@/components/Price';
 
 const iconMap: Record<string, LucideIcon> = {
   globe: Globe,
@@ -27,7 +28,9 @@ export default function ServiceCard({ service }: { service: ServiceData }) {
         <p className="mt-2 text-sm leading-relaxed text-ink/70">{service.shortDescription}</p>
       </div>
       <div className="mt-6 flex items-center justify-between text-sm">
-        <span className="font-semibold text-brand">From {service.fromPrice}</span>
+        <span className="font-semibold text-brand">
+          <Price amountNGN={service.fromPriceNGN} />
+        </span>
         <span className="font-semibold text-accent-teal group-hover:underline">Learn more &rarr;</span>
       </div>
     </Link>

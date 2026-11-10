@@ -19,6 +19,7 @@ export interface ServiceData {
   outcomes: string[];
   faqs: ServiceFaq[];
   fromPrice: string;
+  fromPriceNGN: number; // base starting price in Naira; USD/GHS equivalents derived via lib/currency
   relatedSlugs: string[];
 }
 
@@ -83,6 +84,7 @@ export const services: ServiceData[] = [
       },
     ],
     fromPrice: '₦450,000',
+    fromPriceNGN: 450000,
     relatedSlugs: ['custom-software', 'digital-consulting'],
   },
   {
@@ -138,6 +140,7 @@ export const services: ServiceData[] = [
       },
     ],
     fromPrice: '₦300,000',
+    fromPriceNGN: 300000,
     relatedSlugs: ['ai-whatsapp-assistant', 'digital-consulting'],
   },
   {
@@ -193,6 +196,7 @@ export const services: ServiceData[] = [
       },
     ],
     fromPrice: '₦350,000',
+    fromPriceNGN: 350000,
     relatedSlugs: ['ai-automation', 'custom-software'],
   },
   {
@@ -244,6 +248,7 @@ export const services: ServiceData[] = [
       },
     ],
     fromPrice: '₦900,000',
+    fromPriceNGN: 900000,
     relatedSlugs: ['ai-automation', 'power-bi-dashboards'],
   },
   {
@@ -299,6 +304,7 @@ export const services: ServiceData[] = [
       },
     ],
     fromPrice: '₦400,000',
+    fromPriceNGN: 400000,
     relatedSlugs: ['ai-automation', 'custom-software'],
   },
   {
@@ -349,6 +355,7 @@ export const services: ServiceData[] = [
       },
     ],
     fromPrice: '₦200,000',
+    fromPriceNGN: 200000,
     relatedSlugs: ['power-bi-dashboards', 'ai-automation'],
   },
 ];

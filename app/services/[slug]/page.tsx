@@ -7,6 +7,7 @@ import Section from '@/components/Section';
 import FAQ from '@/components/FAQ';
 import CTA from '@/components/CTA';
 import CaseStudyCard from '@/components/CaseStudyCard';
+import Price from '@/components/Price';
 import JsonLd from '@/components/JsonLd';
 import { breadcrumbSchema, faqSchema, serviceSchema } from '@/lib/schema';
 
@@ -58,8 +59,8 @@ export default async function ServiceDetailPage({ params }: { params: Promise<{ 
           <Link href="/contact" className="btn-primary">
             Start a Project
           </Link>
-          <span className="inline-flex items-center text-sm font-medium text-white/80">
-            From {service.fromPrice}
+          <span className="inline-block text-sm font-medium text-white/80">
+            <Price amountNGN={service.fromPriceNGN} />
           </span>
         </div>
       </Section>
@@ -163,7 +164,12 @@ export default async function ServiceDetailPage({ params }: { params: Promise<{ 
       <Section tone="off">
         <CTA
           title={`Ready to talk about ${service.name.toLowerCase()}?`}
-          subtitle={`Book a free 15-minute consultation. Pricing for this service starts from ${service.fromPrice}, scoped to your needs.`}
+          subtitle={
+            <>
+              Book a free 15-minute consultation. Pricing for this service starts from{' '}
+              <Price amountNGN={service.fromPriceNGN} variant="sentence" />, scoped to your needs.
+            </>
+          }
         />
       </Section>
     </>
