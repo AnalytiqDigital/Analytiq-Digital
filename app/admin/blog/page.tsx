@@ -1,42 +1,158 @@
 'use client';
 
-import ResourceManager from '@/components/admin/ResourceManager';
+import { useCallback, useEffect, useState } from 'react';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { Plus, Pencil, Trash2 } from 'lucide-react';
+import { toDateFieldValue } from '@/lib/date-field';
+
+interface PostRow {
+  id: number;
+  slug: string;
+  title: string;
+  status: string;
+  category: string;
+  publishedAt: string | null;
+  updatedAt: string;
+}
+
+const STATUS_STYLES: Record<string, string> = {
+  published: 'bg-green-100 text-green-800',
+  scheduled: 'bg-amber-100 text-amber-800',
+  draft: 'bg-slate-100 text-slate-600',
+};
 
 export default function AdminBlogPage() {
+  const router = useRouter();
+  const [rows, setRows] = useState<PostRow[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [creating, setCreating] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const load = useCallback(async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const res = await fetch('/api/admin/blog');
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Failed to load posts');
+      setRows(data.data || []);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to load posts');
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    load();
+  }, [load]);
+
+  async function handleCreate() {
+    setCreating(true);
+    setError(null);
+    try {
+      const res = await fetch('/api/admin/blog', { method: 'POST' });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Could not create post');
+      router.push(`/admin/blog/${data.data.id}/edit`);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Could not create post');
+      setCreating(false);
+    }
+  }
+
+  async function handleDelete(id: number, title: string) {
+    if (!confirm(`Delete "${title}"? This cannot be undone.`)) return;
+    try {
+      const res = await fetch(`/api/admin/blog/${id}`, { method: 'DELETE' });
+      if (!res.ok) {
+        const data = await res.json();
+        throw new Error(data.error || 'Delete failed');
+      }
+      await load();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Delete failed');
+    }
+  }
+
   return (
-    <ResourceManager
-      resource="blog"
-      title="Blog"
-      aiAssist={{ draftField: 'content', titleField: 'title' }}
-      columns={[
-        { key: 'title', label: 'Title' },
-        { key: 'category', label: 'Category' },
-        { key: 'status', label: 'Status' },
-      ]}
-      fields={[
-        { name: 'title', label: 'Title', type: 'text', required: true },
-        { name: 'slug', label: 'Slug (URL path)', type: 'text', required: true },
-        { name: 'excerpt', label: 'Excerpt', type: 'textarea', required: true },
-        { name: 'content', label: 'Content (Markdown)', type: 'textarea', required: true },
-        { name: 'featuredImage', label: 'Featured image URL', type: 'url' },
-        { name: 'category', label: 'Category', type: 'text' },
-        { name: 'tags', label: 'Tags', type: 'tags', help: 'Comma-separated list' },
-        {
-          name: 'status',
-          label: 'Status',
-          type: 'select',
-          options: ['draft', 'scheduled', 'published'],
-          required: true,
-          help: 'Scheduled posts need a future "Published at" date and only display once that date has passed',
-        },
-        { name: 'publishedAt', label: 'Published at', type: 'date' },
-        { name: 'authorName', label: 'Author name', type: 'text' },
-        { name: 'seoTitle', label: 'SEO title', type: 'text' },
-        { name: 'seoDescription', label: 'SEO description', type: 'textarea' },
-        { name: 'seoKeywords', label: 'SEO keywords', type: 'text' },
-        { name: 'canonicalUrl', label: 'Canonical URL', type: 'url' },
-        { name: 'ogImage', label: 'Open Graph image URL', type: 'url' },
-      ]}
-    />
+    <div>
+      <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
+        <div>
+          <h1 className="font-display text-2xl font-bold text-ink">Blog</h1>
+          <p className="mt-1 text-sm text-ink/60">Write in the rich editor — headings, images, CTAs, embeds, AI help.</p>
+        </div>
+        <button type="button" onClick={handleCreate} disabled={creating} className="btn-primary disabled:opacity-40">
+          <Plus size={16} className="mr-1.5" /> {creating ? 'Creating…' : 'New post'}
+        </button>
+      </div>
+
+      {error && <p className="mb-4 rounded-xl bg-red-50 px-4 py-3 text-sm font-medium text-red-700">{error}</p>}
+
+      <div className="overflow-x-auto rounded-2xl border border-slate-200 bg-white">
+        <table className="w-full text-left text-sm">
+          <thead className="border-b border-slate-200 bg-surface-off text-xs font-semibold uppercase tracking-wide text-ink/60">
+            <tr>
+              <th className="px-4 py-3">Title</th>
+              <th className="px-4 py-3">Status</th>
+              <th className="px-4 py-3">Category</th>
+              <th className="px-4 py-3">Published</th>
+              <th className="px-4 py-3 text-right">Actions</th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-slate-100">
+            {loading ? (
+              <tr>
+                <td colSpan={5} className="px-4 py-8 text-center text-ink/50">Loading…</td>
+              </tr>
+            ) : rows.length === 0 ? (
+              <tr>
+                <td colSpan={5} className="px-4 py-8 text-center text-ink/50">
+                  No posts yet. Click “New post” to start writing.
+                </td>
+              </tr>
+            ) : (
+              rows.map((row) => (
+                <tr key={row.id} className="hover:bg-surface-off/60">
+                  <td className="max-w-xs px-4 py-3">
+                    <Link href={`/admin/blog/${row.id}/edit`} className="font-medium text-ink hover:text-brand">
+                      {row.title || '(Untitled)'}
+                    </Link>
+                    <p className="truncate text-xs text-ink/50">/blog/{row.slug}</p>
+                  </td>
+                  <td className="px-4 py-3">
+                    <span className={`inline-block rounded-full px-2.5 py-0.5 text-xs font-semibold capitalize ${STATUS_STYLES[row.status] ?? STATUS_STYLES.draft}`}>
+                      {row.status}
+                    </span>
+                  </td>
+                  <td className="px-4 py-3 text-ink/70">{row.category || '—'}</td>
+                  <td className="px-4 py-3 text-ink/70">{row.publishedAt ? toDateFieldValue(row.publishedAt) : '—'}</td>
+                  <td className="px-4 py-3">
+                    <div className="flex justify-end gap-2">
+                      <Link
+                        href={`/admin/blog/${row.id}/edit`}
+                        className="rounded-lg p-1.5 text-ink/60 hover:bg-brand/10 hover:text-brand"
+                        aria-label="Edit"
+                      >
+                        <Pencil size={16} />
+                      </Link>
+                      <button
+                        type="button"
+                        onClick={() => handleDelete(row.id, row.title)}
+                        className="rounded-lg p-1.5 text-ink/60 hover:bg-red-50 hover:text-red-700"
+                        aria-label="Delete"
+                      >
+                        <Trash2 size={16} />
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              ))
+            )}
+          </tbody>
+        </table>
+      </div>
+    </div>
   );
 }

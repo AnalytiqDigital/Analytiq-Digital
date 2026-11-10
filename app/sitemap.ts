@@ -2,10 +2,10 @@ import type { MetadataRoute } from 'next';
 import { siteConfig } from '@/lib/site-config';
 import { services } from '@/lib/services-data';
 import { caseStudies } from '@/lib/case-studies-data';
-import { blogPosts } from '@/lib/blog-data';
 import { portfolioItems } from '@/lib/portfolio-data';
+import { getPublishedBlogPosts } from '@/lib/queries';
 
-export default function sitemap(): MetadataRoute.Sitemap {
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const base = siteConfig.url;
   const now = new Date();
 
@@ -47,12 +47,19 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.6,
   }));
 
-  const blogRoutes: MetadataRoute.Sitemap = blogPosts.map((p) => ({
-    url: `${base}/blog/${p.slug}`,
-    lastModified: new Date(p.datePublished),
-    changeFrequency: 'yearly',
-    priority: 0.5,
-  }));
+  // DB-backed so newly published posts appear without a redeploy of static data.
+  let blogRoutes: MetadataRoute.Sitemap = [];
+  try {
+    const posts = await getPublishedBlogPosts();
+    blogRoutes = posts.map((p) => ({
+      url: `${base}/blog/${p.slug}`,
+      lastModified: p.publishedAt ?? p.updatedAt ?? now,
+      changeFrequency: 'yearly',
+      priority: 0.5,
+    }));
+  } catch {
+    blogRoutes = [];
+  }
 
   return [...staticRoutes, ...serviceRoutes, ...portfolioRoutes, ...caseStudyRoutes, ...blogRoutes];
 }

@@ -4,6 +4,7 @@ import { getBlogPostBySlug } from '@/lib/queries';
 import Section from '@/components/Section';
 import CTA from '@/components/CTA';
 import BlogContent from '@/components/BlogContent';
+import BlogRichContent from '@/components/BlogRichContent';
 import JsonLd from '@/components/JsonLd';
 import { articleSchema, breadcrumbSchema } from '@/lib/schema';
 
@@ -57,7 +58,11 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
 
       <Section>
         <article className="mx-auto max-w-prose">
-          <BlogContent content={post.content} />
+          {post.contentHtml ? (
+            <BlogRichContent html={post.contentHtml} />
+          ) : (
+            <BlogContent content={post.content} />
+          )}
         </article>
       </Section>
 

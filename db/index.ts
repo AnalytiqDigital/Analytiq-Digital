@@ -2,6 +2,7 @@ import { drizzle } from 'drizzle-orm/postgres-js';
 import postgres from 'postgres';
 import * as schema from './schema';
 import * as waSchema from './schema-whatsapp';
+import * as portalSchema from './schema-portal';
 
 function createDb() {
   const databaseUrl = process.env.DATABASE_URL;
@@ -14,7 +15,7 @@ function createDb() {
     ssl: process.env.NODE_ENV === 'production' ? 'require' : undefined,
   });
 
-  return drizzle(client, { schema: { ...schema, ...waSchema } });
+  return drizzle(client, { schema: { ...schema, ...waSchema, ...portalSchema } });
 }
 
 type DbClient = ReturnType<typeof createDb>;

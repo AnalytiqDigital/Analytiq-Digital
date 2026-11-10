@@ -103,6 +103,10 @@ export const blogPosts = pgTable('blog_posts', {
   title: text('title').notNull(),
   excerpt: text('excerpt').notNull().default(''),
   content: text('content').notNull().default(''),
+  /** TipTap JSON document — source of truth for the rich editor (NULL = legacy `content` fallback). */
+  contentJson: jsonb('content_json').$type<{ type: string; content?: unknown[] } | null>(),
+  /** Server-rendered HTML cache for the public page (rebuilt on every save). */
+  contentHtml: text('content_html'),
   featuredImage: text('featured_image'),
   category: text('category').notNull().default(''),
   tags: jsonb('tags').$type<string[]>().notNull().default([]),
