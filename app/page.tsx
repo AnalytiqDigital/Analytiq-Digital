@@ -14,6 +14,9 @@ import ReviewsSection from '@/components/ReviewsSection';
 import CTA from '@/components/CTA';
 import EcosystemSection from '@/components/EcosystemSection';
 import Reveal from '@/components/Reveal';
+import Magnetic from '@/components/Magnetic';
+import NeuralField from '@/components/NeuralField';
+import CinematicReveal, { StaggerWords } from '@/components/CinematicReveal';
 import FAQ from '@/components/FAQ';
 import JsonLd from '@/components/JsonLd';
 import { faqSchema } from '@/lib/schema';
@@ -68,8 +71,9 @@ export default async function HomePage() {
   return (
     <>
       {/* Hero */}
-      <section className="relative overflow-hidden bg-brand-gradient text-white">
+      <section data-hero-field className="relative overflow-hidden bg-brand-gradient text-white">
         <div className="pointer-events-none absolute inset-0 bg-grid-pattern bg-grid opacity-30" aria-hidden="true" />
+        <NeuralField density={1.15} />
         <div
           className="pointer-events-none absolute -left-24 top-10 h-72 w-72 animate-aurora rounded-full bg-accent-teal/30 blur-3xl"
           aria-hidden="true"
@@ -81,36 +85,48 @@ export default async function HomePage() {
 
         <div className="container-page relative grid gap-12 py-20 sm:py-28 lg:grid-cols-2 lg:items-center">
           <div>
-            <span className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-4 py-1.5 text-xs font-semibold text-accent-light backdrop-blur-sm">
+            <span className="badge-intel inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-4 py-1.5 text-xs font-semibold text-accent-light backdrop-blur-sm">
               <Sparkles size={14} /> AI-Powered Digital Transformation
             </span>
-            <h1 className="mt-5 font-display text-4xl font-bold leading-tight sm:text-5xl">
-              {siteConfig.tagline}
+            <h1 className="headline-glow mt-5 font-display text-4xl font-bold leading-tight sm:text-5xl">
+              <StaggerWords text={siteConfig.tagline} baseDelay={150} step={95} />
             </h1>
-            <p className="mt-5 max-w-xl text-lg leading-relaxed text-white/85">{siteConfig.positioning}</p>
-            <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-              <Link href="/contact" className="btn-primary">
-                Start a Project <ArrowRight size={16} className="ml-2" />
-              </Link>
-              <a href={siteConfig.erpSignupUrl} className="btn-secondary">
-                Try AnalytIQ ERP Free
-              </a>
-            </div>
+            <CinematicReveal delay={650} y={20}>
+              <p className="mt-5 max-w-xl text-lg leading-relaxed text-white/85">{siteConfig.positioning}</p>
+            </CinematicReveal>
+            <CinematicReveal delay={820} y={20}>
+              <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+                <Magnetic strength={22}>
+                  <Link href="/contact" className="btn-primary">
+                    Start a Project <ArrowRight size={16} className="ml-2" />
+                  </Link>
+                </Magnetic>
+                <Magnetic strength={16}>
+                  <a href={siteConfig.erpSignupUrl} className="btn-secondary">
+                    Try AnalytIQ ERP Free
+                  </a>
+                </Magnetic>
+              </div>
+            </CinematicReveal>
           </div>
 
-          <div className="relative">
-            <div className="ai-panel animate-float">
-              <p className="eyebrow text-accent-light">What we deliver</p>
-              <ul className="mt-4 space-y-3 text-sm text-white/85">
-                {services.slice(0, 5).map((s) => (
-                  <li key={s.slug} className="flex items-start gap-3">
-                    <span className="mt-1 h-1.5 w-1.5 shrink-0 animate-pulse-glow rounded-full bg-accent-teal" />
-                    <span>{s.shortDescription}</span>
-                  </li>
-                ))}
-              </ul>
+          <CinematicReveal delay={500} y={44}>
+            <div className="relative">
+              <div className="ai-panel animate-float">
+                <div className="data-stream" aria-hidden="true" />
+                <div className="data-stream data-stream-slow" aria-hidden="true" />
+                <p className="eyebrow text-accent-light">What we deliver</p>
+                <ul className="mt-4 space-y-3 text-sm text-white/85">
+                  {services.slice(0, 5).map((s) => (
+                    <li key={s.slug} className="flex items-start gap-3">
+                      <span className="intel-node mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-accent-teal" />
+                      <span>{s.shortDescription}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
             </div>
-          </div>
+          </CinematicReveal>
         </div>
       </section>
 
@@ -136,18 +152,22 @@ export default async function HomePage() {
 
       {/* Services */}
       <Section>
-        <div className="mb-10 max-w-2xl">
-          <p className="eyebrow">Services</p>
-          <h2 className="mt-2 font-display text-3xl font-bold text-ink">
-            Six ways we help businesses run on smarter systems
-          </h2>
-          <p className="mt-3 text-ink/70">
-            Each service is scoped independently — most engagements start with just one of these and expand once the first result is proven.
-          </p>
-        </div>
+        <CinematicReveal>
+          <div className="mb-10 max-w-2xl">
+            <p className="eyebrow">Services</p>
+            <h2 className="mt-2 font-display text-3xl font-bold text-ink">
+              Six ways we help businesses run on smarter systems
+            </h2>
+            <p className="mt-3 text-ink/70">
+              Each service is scoped independently — most engagements start with just one of these and expand once the first result is proven.
+            </p>
+          </div>
+        </CinematicReveal>
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {services.map((service) => (
-            <ServiceCard key={service.slug} service={service} />
+          {services.map((service, i) => (
+            <CinematicReveal key={service.slug} delay={(i % 3) * 110} y={44}>
+              <ServiceCard service={service} />
+            </CinematicReveal>
           ))}
         </div>
       </Section>

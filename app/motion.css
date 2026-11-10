@@ -1,0 +1,170 @@
+/* Cinematic motion layer for AnalytIQ Digital.
+   Colors locked to the existing system: cyan #30e7ff, lime #9bff6a,
+   violet #8a63ff, magenta #ff4eb8. No new palette — motion only. */
+
+/* --- Living grid: very subtle breathing on brand-section grids --- */
+@keyframes grid-breathe {
+  0%, 100% { opacity: 0.28; }
+  50% { opacity: 0.38; }
+}
+.bg-brand-gradient .bg-grid-pattern {
+  animation: grid-breathe 9s ease-in-out infinite;
+}
+
+/* --- Intelligent badge pulse --- */
+@keyframes badge-pulse {
+  0%, 100% { box-shadow: 0 0 0 rgba(48, 231, 255, 0), 0 0 0 rgba(48, 231, 255, 0); }
+  50% { box-shadow: 0 0 22px rgba(48, 231, 255, 0.35), inset 0 0 12px rgba(48, 231, 255, 0.08); }
+}
+.badge-intel {
+  animation: badge-pulse 3.4s ease-in-out infinite;
+}
+
+/* --- Data streams: light flowing across panels --- */
+@keyframes data-flow {
+  0% { transform: translateX(-110%) skewX(-12deg); opacity: 0; }
+  15% { opacity: 1; }
+  85% { opacity: 1; }
+  100% { transform: translateX(320%) skewX(-12deg); opacity: 0; }
+}
+.data-stream {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 32%;
+  background: linear-gradient(90deg, transparent, rgba(48, 231, 255, 0.16), rgba(155, 255, 106, 0.1), transparent);
+  animation: data-flow 5.5s cubic-bezier(0.45, 0, 0.2, 1) infinite;
+  pointer-events: none;
+}
+.data-stream-slow {
+  animation-duration: 8.5s;
+  animation-delay: 2.2s;
+  background: linear-gradient(90deg, transparent, rgba(138, 99, 255, 0.14), transparent);
+}
+
+/* --- Live panel: scan intensifies on hover --- */
+.ai-panel::after {
+  transition: opacity 0.6s ease;
+}
+.ai-panel:hover::after {
+  opacity: 1.6;
+  background: linear-gradient(to bottom, rgba(48, 231, 255, 0.3), transparent);
+}
+
+/* --- Intelligence nodes: light up on hover --- */
+.intel-node {
+  transition: box-shadow 0.35s ease, background-color 0.35s ease, transform 0.35s ease;
+}
+li:hover .intel-node,
+.intel-node-lit {
+  background-color: #9bff6a !important;
+  box-shadow: 0 0 14px rgba(155, 255, 106, 0.9), 0 0 3px rgba(155, 255, 106, 1);
+  transform: scale(1.35);
+}
+
+/* --- Headline settle glow --- */
+.headline-glow {
+  text-shadow: 0 0 44px rgba(48, 231, 255, 0.22);
+}
+
+/* --- Page transition: continuous camera move --- */
+@keyframes page-in {
+  0% { opacity: 0; transform: scale(0.996) translateY(10px); filter: blur(8px); }
+  100% { opacity: 1; transform: none; filter: blur(0); }
+}
+.page-enter {
+  animation: page-in 0.8s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/* --- Thinking dots (agentic "alive" state) --- */
+@keyframes think-blink {
+  0%, 100% { opacity: 0.22; transform: scale(0.75); }
+  50% { opacity: 1; transform: scale(1); }
+}
+.think-dot {
+  animation: think-blink 1.5s ease-in-out infinite;
+}
+
+/* --- Blueprint assembly (web precision) --- */
+@keyframes block-assemble {
+  0% { opacity: 0; transform: scale(0.55) translateY(12px); }
+  100% { opacity: 1; transform: none; }
+}
+.blueprint-block {
+  animation: block-assemble 0.9s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/* --- Conversational bloom (WhatsApp) --- */
+@keyframes chat-cycle {
+  0%, 100% { opacity: 0.55; transform: translateY(0); }
+  50% { opacity: 1; transform: translateY(-5px); }
+}
+.chat-bubble {
+  animation: chat-cycle 7s ease-in-out infinite;
+}
+
+/* --- Diagnostic scan (consulting calm) --- */
+@keyframes sweep {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+.radar-sweep {
+  background: conic-gradient(from 0deg, rgba(48, 231, 255, 0.4), transparent 22%);
+  animation: sweep 7s linear infinite;
+}
+@keyframes ring-pulse {
+  0%, 100% { opacity: 0.25; transform: scale(1); }
+  50% { opacity: 0.6; transform: scale(1.04); }
+}
+.radar-ring {
+  animation: ring-pulse 4.5s ease-in-out infinite;
+}
+
+/* --- Strata orchestration (custom software) --- */
+.strata-line {
+  background: linear-gradient(to bottom, rgba(48, 231, 255, 0.5), rgba(138, 99, 255, 0.5), rgba(155, 255, 106, 0.4));
+}
+
+/* --- Card hover: data stream sweeps across --- */
+.card .data-stream {
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+.card:hover .data-stream {
+  opacity: 1;
+}
+
+/* --- Magnetic CTA energy --- */
+.btn-primary {
+  transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.35s ease, background-color 0.35s ease;
+}
+.btn-primary:hover {
+  box-shadow: 8px 8px 0 var(--poly-magenta), 0 0 34px rgba(155, 255, 106, 0.5);
+}
+.btn-secondary {
+  transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.35s ease, border-color 0.35s ease, background-color 0.35s ease;
+}
+.btn-secondary:hover {
+  box-shadow: 0 0 26px rgba(48, 231, 255, 0.35), inset 0 0 18px rgba(48, 231, 255, 0.08);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bg-brand-gradient .bg-grid-pattern,
+  .badge-intel,
+  .data-stream,
+  .think-dot,
+  .blueprint-block,
+  .chat-bubble,
+  .radar-sweep,
+  .radar-ring,
+  .page-enter {
+    animation: none !important;
+  }
+  .blueprint-block,
+  .page-enter {
+    opacity: 1 !important;
+    transform: none !important;
+    filter: none !important;
+  }
+}

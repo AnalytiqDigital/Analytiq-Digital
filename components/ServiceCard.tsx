@@ -20,18 +20,19 @@ export default function ServiceCard({ service }: { service: ServiceData }) {
       href={`/services/${service.slug}`}
       className="card group relative flex flex-col justify-between overflow-hidden transition hover:-translate-y-1 hover:shadow-glow"
     >
-      <div>
-        <div className="mb-4 inline-flex h-11 w-11 items-center justify-center rounded-xl bg-brand-gradient text-white">
+      <div className="data-stream" aria-hidden="true" />
+      <div className="relative">
+        <div className="mb-4 inline-flex h-11 w-11 items-center justify-center rounded-xl bg-brand-gradient text-white transition-transform duration-300 group-hover:-translate-y-1 group-hover:scale-105">
           <Icon size={20} strokeWidth={2} />
         </div>
         <h3 className="font-display text-lg font-bold text-ink group-hover:text-brand">{service.name}</h3>
         <p className="mt-2 text-sm leading-relaxed text-ink/70">{service.shortDescription}</p>
       </div>
-      <div className="mt-6 flex items-center justify-between text-sm">
+      <div className="relative mt-6 flex items-center justify-between text-sm">
         <span className="font-semibold text-brand">
           <Price amountNGN={service.fromPriceNGN} />
         </span>
-        <span className="font-semibold text-accent-teal group-hover:underline">Learn more &rarr;</span>
+        <span className="font-semibold text-accent-teal transition-transform duration-300 group-hover:translate-x-1 group-hover:underline">Learn more &rarr;</span>
       </div>
     </Link>
   );
