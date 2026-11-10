@@ -23,7 +23,7 @@ export interface MediaItem {
 }
 
 export async function listMedia(): Promise<MediaItem[]> {
-  const res = await fetch('/api/admin/media');
+  const res = await fetch('/api/admin/media/upload');
   const data = await res.json().catch(() => ({}));
   if (!res.ok) throw new Error(data.error || 'Could not load the media library');
   return data.data || [];

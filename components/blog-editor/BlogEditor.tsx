@@ -14,6 +14,7 @@ import { CtaDialog, EmbedDialog, ImageDialog, LinkDialog } from './EditorDialogs
 import { CtaButton, Embed, RichImage } from './extensions';
 import { uploadImage } from './upload';
 import { legacyContentToTipTapDoc, tipTapDocToText } from '@/lib/blog-render';
+import { fetchJson } from '@/lib/fetch-json';
 import './editor.css';
 
 export interface BlogPostData {
@@ -80,7 +81,6 @@ export default function BlogEditor({
   onSaved: (savedHtml: string, savedAt: Date) => void;
   onDirtyChange?: (dirty: boolean) => void;
 }) {
-  const [externalDoc] = useState(post.contentJson);
   const [dialog, setDialog] = useState<DialogState>(null);
   const [aiMode, setAiMode] = useState<AiMode | null>(null);
   const [aiBubble, setAiBubble] = useState<{ x: number; y: number; text: string } | null>(null);
@@ -90,7 +90,6 @@ export default function BlogEditor({
   const pendingRef = useRef<{ doc: unknown; title: string } | null>(null);
   const titleRef = useRef(post.title);
   const canvasRef = useRef<HTMLDivElement>(null);
-  const docRef = useRef<unknown>(externalDoc);
 
   const initialDoc = useMemo(() => {
     if (post.contentJson && (post.contentJson as { type?: string }).type === 'doc') return post.contentJson;
@@ -99,16 +98,21 @@ export default function BlogEditor({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  // Start from the same doc the canvas loads — otherwise legacy posts
+  // (contentJson null) would save a null doc when saved before first edit.
+  const docRef = useRef<unknown>(initialDoc);
+
   const persist = useCallback(
     async (doc: unknown, title: string) => {
       try {
-        const res = await fetch(`/api/admin/blog/${post.id}/draft`, {
-          method: 'PUT',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ contentJson: doc, title }),
-        });
-        const data = await res.json().catch(() => ({}));
-        if (!res.ok) throw new Error(data.error || 'Autosave failed');
+        const data = await fetchJson<{ data?: { contentHtml?: string; updatedAt?: string } }>(
+          `/api/admin/blog/${post.id}/draft`,
+          {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ contentJson: doc, title }),
+          },
+        );
         onSaved(data.data?.contentHtml ?? '', new Date(data.data?.updatedAt ?? Date.now()));
         setSaveState('saved');
         onDirtyChange?.(false);
@@ -282,7 +286,10 @@ export default function BlogEditor({
   const insertAtEnd = useCallback(
     (text: string) => {
       if (!editor) return;
-      const paragraphs = text.split(/\n\n+/).filter(Boolean);
+      // AI results are plain text: headlines/outlines use single newlines,
+      // continuations use blank-line-separated paragraphs. Split on any
+      // newline run so a numbered list doesn't land as one giant paragraph.
+      const paragraphs = text.split(/\n+/).map((p) => p.trim()).filter(Boolean);
       editor.chain().focus('end').run();
       for (const p of paragraphs) {
         editor.chain().focus('end').insertContent({ type: 'paragraph', content: [{ type: 'text', text: p }] }).run();

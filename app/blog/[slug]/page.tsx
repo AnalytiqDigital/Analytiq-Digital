@@ -54,6 +54,10 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
           {formatDate(post.publishedAt)} {post.category ? `· ${post.category}` : ''}
         </p>
         <h1 className="mt-2 max-w-3xl font-display text-4xl font-bold sm:text-5xl">{post.title}</h1>
+        {post.featuredImage && (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img src={post.featuredImage} alt="" className="mt-8 max-h-96 w-full rounded-2xl object-cover" />
+        )}
       </Section>
 
       <Section>

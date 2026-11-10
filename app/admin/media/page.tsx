@@ -145,7 +145,7 @@ export default function AdminMediaPage() {
   const load = useCallback(async () => {
     setLoading(true);
     try {
-      const res = await fetch('/api/admin/media');
+      const res = await fetch('/api/admin/media/upload');
       const data = await res.json();
       if (!res.ok) throw new Error(data.error);
       setItems(data.data || []);

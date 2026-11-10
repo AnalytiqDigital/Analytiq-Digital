@@ -45,9 +45,13 @@ export default async function BlogIndexPage() {
               <Link
                 key={post.slug}
                 href={`/blog/${post.slug}`}
-                className="card flex flex-col justify-between transition hover:-translate-y-0.5 hover:shadow-soft"
+                className="card flex flex-col justify-between overflow-hidden transition hover:-translate-y-0.5 hover:shadow-soft"
               >
                 <div>
+                  {post.featuredImage && (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img src={post.featuredImage} alt="" className="mb-4 aspect-video w-full rounded-sm object-cover" />
+                  )}
                   <p className="text-xs font-medium text-ink/50">
                     {formatDate(post.publishedAt)} {post.category ? `· ${post.category}` : ''}
                   </p>

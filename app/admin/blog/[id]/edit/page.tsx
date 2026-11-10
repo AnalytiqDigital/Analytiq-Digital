@@ -8,6 +8,7 @@ import PublishPanel, { metaToFormPatch, postToForm, type PublishForm } from '@/c
 import AiPanel, { type MetaResult } from '@/components/blog-editor/AiPanel';
 import BlogRichContent from '@/components/BlogRichContent';
 import { tipTapDocToText } from '@/lib/blog-render';
+import { fetchJson } from '@/lib/fetch-json';
 
 export default function EditBlogPostPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
@@ -29,9 +30,7 @@ export default function EditBlogPostPage({ params }: { params: Promise<{ id: str
     async function load() {
       setLoading(true);
       try {
-        const res = await fetch(`/api/admin/blog/${id}`);
-        const data = await res.json();
-        if (!res.ok) throw new Error(data.error || 'Failed to load post');
+        const data = await fetchJson<{ data: BlogPostData }>(`/api/admin/blog/${id}`);
         setPost(data.data);
         setForm(postToForm(data.data));
         setPreviewHtml(data.data.contentHtml || '');
@@ -45,11 +44,12 @@ export default function EditBlogPostPage({ params }: { params: Promise<{ id: str
   }, [id]);
 
   // "Review with AI" applies suggested SEO fields into the publish form.
+  // Never clobbers an existing slug (published URLs, manual edits).
   useEffect(() => {
     const onMeta = (e: Event) => {
       const meta = (e as CustomEvent<MetaResult>).detail;
       if (meta && form) {
-        setForm({ ...form, ...metaToFormPatch(meta) });
+        setForm({ ...form, ...metaToFormPatch(meta, form.slug) });
         setDirty(true);
       }
     };
@@ -76,7 +76,7 @@ export default function EditBlogPostPage({ params }: { params: Promise<{ id: str
       if (!doc) throw new Error('The editor is still loading — wait a moment and try again.');
 
       const status = publish ? 'published' : form.status;
-      const res = await fetch(`/api/admin/blog/${post.id}`, {
+      const data = await fetchJson<{ data: BlogPostData }>(`/api/admin/blog/${post.id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -100,8 +100,6 @@ export default function EditBlogPostPage({ params }: { params: Promise<{ id: str
           ogImage: form.ogImage || null,
         }),
       });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || 'Save failed');
       setPost(data.data);
       setForm(postToForm(data.data));
       setPreviewHtml(data.data.contentHtml || '');
@@ -120,13 +118,11 @@ export default function EditBlogPostPage({ params }: { params: Promise<{ id: str
     try {
       await editorApi.current?.flush();
       const text = editorApi.current?.getText() || tipTapDocToText(post.contentJson) || post.content;
-      const res = await fetch('/api/admin/ai/seo', {
+      const data = await fetchJson<{ data: any }>('/api/admin/ai/seo', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ draft: text, title: form.title }),
       });
-      const data = await res.json().catch(() => ({}));
-      if (!res.ok) throw new Error(data.error || 'AI generation failed');
       const s = data.data;
       patchForm({
         seoTitle: s.seoTitle || form.seoTitle,
@@ -212,7 +208,7 @@ export default function EditBlogPostPage({ params }: { params: Promise<{ id: str
           onClose={() => setMetaPanel(false)}
           onInsert={() => setMetaPanel(false)}
           onApplyMeta={(meta) => {
-            patchForm(metaToFormPatch(meta));
+            patchForm(metaToFormPatch(meta, form.slug));
             setMetaPanel(false);
           }}
         />

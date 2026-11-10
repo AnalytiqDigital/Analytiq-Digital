@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { Sparkles, X, Check, Loader2 } from 'lucide-react';
+import { fetchJson } from '@/lib/fetch-json';
 
 export type AiMode =
   | { kind: 'selection'; action: 'improve' | 'expand' | 'shorten' | 'tone' | 'grammar'; text: string }
@@ -42,45 +43,44 @@ export default function AiPanel({
   onClose,
   onInsert,
   onApplyMeta,
-  onDocAction,
 }: {
   mode: AiMode;
   title: string;
   onClose: () => void;
   onInsert: (text: string) => void;
   onApplyMeta?: (meta: MetaResult) => void;
-  /** Switch the article-level action (Continue / Outline / Headlines). */
-  onDocAction?: (action: 'continue' | 'outline' | 'headlines') => void;
 }) {
-  const key = mode.kind === 'meta' ? 'meta' : mode.action;
   const [tone, setTone] = useState(TONES[0]);
+  const [docAction, setDocAction] = useState<'continue' | 'outline' | 'headlines'>(
+    mode.kind === 'doc' ? mode.action : 'continue',
+  );
+  const key = mode.kind === 'meta' ? 'meta' : mode.kind === 'doc' ? docAction : mode.action;
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [result, setResult] = useState<string | null>(null);
   const [meta, setMeta] = useState<MetaResult | null>(null);
 
-  async function run(customTone?: string) {
+  async function run(customTone?: string, docActionOverride?: 'continue' | 'outline' | 'headlines') {
     setLoading(true);
     setError(null);
     setResult(null);
     setMeta(null);
     try {
-      const res = await fetch('/api/admin/ai/write', {
+      const action = mode.kind === 'doc' ? (docActionOverride ?? docAction) : mode.kind === 'meta' ? 'meta' : mode.action;
+      const data = await fetchJson<{ data?: any }>('/api/admin/ai/write', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(
           mode.kind === 'meta'
             ? { action: 'meta', text: mode.text, title }
             : {
-                action: mode.action,
+                action,
                 text: mode.text,
                 title,
-                ...(mode.action === 'tone' ? { instruction: customTone ?? tone } : {}),
+                ...(action === 'tone' ? { instruction: customTone ?? tone } : {}),
               },
         ),
       });
-      const data = await res.json().catch(() => ({}));
-      if (!res.ok) throw new Error(data.error || 'AI request failed');
       if (mode.kind === 'meta' && onApplyMeta) {
         setMeta(data.data as MetaResult);
       } else {
@@ -93,17 +93,20 @@ export default function AiPanel({
     }
   }
 
+  // Run once when the panel mounts. Empty deps on purpose: the parent
+  // re-renders often (typing in the title rebuilds the inline `mode` object),
+  // and re-running here would wipe a just-generated result. The panel itself
+  // is conditionally mounted per opening, so mount == one opening.
   useEffect(() => {
-    setTone(TONES[0]);
-    setLoading(false);
-    setError(null);
-    setResult(null);
-    setMeta(null);
-    if (mode.kind !== 'meta' && 'action' in mode && mode.action !== 'tone') {
+    const initialDoc = mode.kind === 'doc' ? mode.action : 'continue';
+    setDocAction(initialDoc);
+    if (mode.kind === 'doc') {
+      run(undefined, initialDoc);
+    } else if (mode.kind !== 'meta' && 'action' in mode && mode.action !== 'tone') {
       run();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [key, mode.kind === 'meta' ? null : (mode as { text?: string }).text]);
+  }, []);
 
   return (
     <div className="fixed inset-0 z-50 flex justify-end bg-ink/40" onClick={onClose}>
@@ -122,6 +125,26 @@ export default function AiPanel({
         </div>
 
         <div className="flex-1 space-y-4 overflow-y-auto px-5 py-4">
+          {mode.kind === 'doc' && (
+            <div className="flex gap-1 rounded-xl bg-surface-off p-1">
+              {DOC_TABS.map((t) => (
+                <button
+                  key={t.key}
+                  type="button"
+                  onClick={() => {
+                    setDocAction(t.key);
+                    run(undefined, t.key);
+                  }}
+                  className={`flex-1 rounded-lg px-3 py-1.5 text-sm font-medium transition ${
+                    docAction === t.key ? 'bg-white text-brand shadow' : 'text-ink/60 hover:text-ink'
+                  }`}
+                >
+                  {t.label}
+                </button>
+              ))}
+            </div>
+          )}
+
           {mode.kind === 'selection' && (
             <div className="rounded-xl bg-surface-off p-3 text-sm leading-relaxed text-ink/70">
               <p className="mb-1 text-xs font-semibold uppercase tracking-wide text-ink/40">Working on</p>

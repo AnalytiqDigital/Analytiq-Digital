@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import PortalResourceManager from '@/components/admin/PortalResourceManager';
+import { fetchJson } from '@/lib/fetch-json';
 
 interface ClientOption {
   id: number;
@@ -14,9 +15,8 @@ export default function AdminPortalProjectsPage() {
   const [clients, setClients] = useState<ClientOption[]>([]);
 
   useEffect(() => {
-    fetch('/api/admin/portal/clients')
-      .then((r) => r.json())
-      .then((d) => setClients((d.data || []).map((c: any) => ({ id: c.id, name: c.name, email: c.email }))))
+    fetchJson<{ data?: ClientOption[] }>('/api/admin/portal/clients')
+      .then((d) => setClients((d.data || []).map((c) => ({ id: c.id, name: c.name, email: c.email }))))
       .catch(() => setClients([]));
   }, []);
 

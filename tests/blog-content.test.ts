@@ -84,11 +84,15 @@ describe('tiptap rendering', () => {
 });
 
 describe('safeUrl', () => {
-  it('accepts http(s) and mailto, rejects the rest', () => {
+  it('accepts http(s), mailto, and internal links; rejects the rest', () => {
     expect(safeUrl('https://example.com/a?b=1')).toBe('https://example.com/a?b=1');
     expect(safeUrl('mailto:hi@example.com')).toBe('mailto:hi@example.com');
+    expect(safeUrl('/contact')).toBe('/contact');
+    expect(safeUrl('/blog/some-post')).toBe('/blog/some-post');
+    expect(safeUrl('#section')).toBe('#section');
     expect(safeUrl('javascript:alert(1)')).toBeNull();
-    expect(safeUrl('/relative/path')).toBeNull();
+    expect(safeUrl('//evil.com/phish')).toBeNull();
+    expect(safeUrl('')).toBeNull();
     expect(safeUrl(null)).toBeNull();
   });
 });
