@@ -24,7 +24,7 @@ export const CtaButton = Node.create({
     return [{ tag: 'div[data-cta-button]' }];
   },
 
-  renderHTML({ HTMLAttributes }) {
+  renderHTML({ HTMLAttributes }: { HTMLAttributes: Record<string, any> }) {
     const variant = HTMLAttributes.variant === 'secondary' ? 'btn-secondary' : 'btn-primary';
     return [
       'div',
@@ -54,7 +54,7 @@ export const Embed = Node.create({
     return [{ tag: 'div[data-embed]' }];
   },
 
-  renderHTML({ HTMLAttributes }) {
+  renderHTML({ HTMLAttributes }: { HTMLAttributes: Record<string, any> }) {
     return [
       'div',
       mergeAttributes(HTMLAttributes, { 'data-embed': '', class: 'embed-wrap' }),

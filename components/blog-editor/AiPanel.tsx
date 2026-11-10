@@ -100,7 +100,7 @@ export default function AiPanel({
     setResult(null);
     setMeta(null);
     if (mode.kind !== 'meta' && 'action' in mode && mode.action !== 'tone') {
-      runFor(mode);
+      run();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [key, mode.kind === 'meta' ? null : (mode as { text?: string }).text]);

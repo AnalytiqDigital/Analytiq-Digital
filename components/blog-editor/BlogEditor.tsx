@@ -137,7 +137,6 @@ export default function BlogEditor({
       extensions: [
         StarterKit.configure({
           heading: { levels: [2, 3] },
-          link: false,
           codeBlock: {},
         }),
         Link.configure({ openOnClick: false, autolink: true, defaultProtocol: 'https' }),
@@ -150,7 +149,7 @@ export default function BlogEditor({
       content: initialDoc as never,
       editorProps: {
         attributes: { class: 'blog-editor-canvas' },
-        handlePaste(view, event) {
+        handlePaste(view: any, event: ClipboardEvent) {
           const items = Array.from(event.clipboardData?.items ?? []);
           const imageItem = items.find((i) => i.type.startsWith('image/'));
           if (!imageItem) return false;
@@ -170,7 +169,7 @@ export default function BlogEditor({
             });
           return true;
         },
-        handleDrop(view, event) {
+        handleDrop(view: any, event: DragEvent) {
           const file = Array.from(event.dataTransfer?.files ?? []).find((f) => f.type.startsWith('image/'));
           if (!file) return false;
           event.preventDefault();
@@ -187,14 +186,14 @@ export default function BlogEditor({
         },
       },
       immediatelyRender: false,
-      onUpdate: ({ editor: e }) => {
+      onUpdate: ({ editor: e }: { editor: any }) => {
         const doc = e.getJSON();
         docRef.current = doc;
         setLiveText(tipTapDocToText(doc));
         scheduleSave(doc);
         setAiBubble(null);
       },
-      onSelectionUpdate: ({ editor: e }) => {
+      onSelectionUpdate: ({ editor: e }: { editor: any }) => {
         const { from, to, empty } = e.state.selection;
         if (empty) {
           setAiBubble(null);

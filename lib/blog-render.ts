@@ -106,7 +106,7 @@ export function renderNode(node: TipTapNode): string {
     case 'paragraph':
       return `<p>${renderInline(node.content)}</p>`;
     case 'heading': {
-      const level = [1, 2, 3, 4].includes(node.attrs?.level) ? node.attrs.level : 2;
+      const level = [1, 2, 3, 4].includes(node.attrs?.level) ? (node.attrs as { level: number }).level : 2;
       return `<h${level}>${renderInline(node.content)}</h${level}>`;
     }
     case 'bulletList':
