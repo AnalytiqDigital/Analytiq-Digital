@@ -1,11 +1,13 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 import { SESSION_COOKIE, verifySessionToken } from '@/lib/auth-edge';
+import { PORTAL_SESSION_COOKIE, verifyPortalSessionToken } from '@/lib/portal-auth-edge';
 
 // Canonical host for this site. Update if the domain ever changes.
 const CANONICAL_HOST = 'www.analytiq.ng';
 
 const PUBLIC_ADMIN_PATHS = ['/admin/login'];
+const PUBLIC_PORTAL_PATHS = ['/portal/login', '/portal/signup'];
 
 export async function proxy(request: NextRequest) {
   const url = request.nextUrl.clone();
@@ -47,6 +49,29 @@ export async function proxy(request: NextRequest) {
       }
       const loginUrl = request.nextUrl.clone();
       loginUrl.pathname = '/admin/login';
+      loginUrl.searchParams.set('from', pathname);
+      return NextResponse.redirect(loginUrl);
+    }
+  }
+
+  // Protect the client portal (but never confuse its cookie with the admin one).
+  const isPortalPath = pathname.startsWith('/portal') && !PUBLIC_PORTAL_PATHS.includes(pathname);
+  const isPortalApiPath =
+    pathname.startsWith('/api/portal') &&
+    !pathname.startsWith('/api/portal/auth/') &&
+    !pathname.startsWith('/api/portal/webhooks/') &&
+    pathname !== '/api/portal/pay/callback';
+
+  if (isPortalPath || isPortalApiPath) {
+    const token = request.cookies.get(PORTAL_SESSION_COOKIE)?.value;
+    const session = token ? await verifyPortalSessionToken(token) : null;
+
+    if (!session) {
+      if (isPortalApiPath) {
+        return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+      }
+      const loginUrl = request.nextUrl.clone();
+      loginUrl.pathname = '/portal/login';
       loginUrl.searchParams.set('from', pathname);
       return NextResponse.redirect(loginUrl);
     }

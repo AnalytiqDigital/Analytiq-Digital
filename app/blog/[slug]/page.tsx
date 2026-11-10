@@ -4,6 +4,7 @@ import { getBlogPostBySlug } from '@/lib/queries';
 import Section from '@/components/Section';
 import CTA from '@/components/CTA';
 import BlogContent from '@/components/BlogContent';
+import BlogRichContent from '@/components/BlogRichContent';
 import JsonLd from '@/components/JsonLd';
 import { articleSchema, breadcrumbSchema } from '@/lib/schema';
 
@@ -53,11 +54,19 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
           {formatDate(post.publishedAt)} {post.category ? `· ${post.category}` : ''}
         </p>
         <h1 className="mt-2 max-w-3xl font-display text-4xl font-bold sm:text-5xl">{post.title}</h1>
+        {post.featuredImage && (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img src={post.featuredImage} alt="" className="mt-8 max-h-96 w-full rounded-2xl object-cover" />
+        )}
       </Section>
 
       <Section>
         <article className="mx-auto max-w-prose">
-          <BlogContent content={post.content} />
+          {post.contentHtml ? (
+            <BlogRichContent html={post.contentHtml} />
+          ) : (
+            <BlogContent content={post.content} />
+          )}
         </article>
       </Section>
 

@@ -2,17 +2,45 @@ import { drizzle } from 'drizzle-orm/postgres-js';
 import postgres from 'postgres';
 import * as schema from './schema';
 import * as waSchema from './schema-whatsapp';
+import * as portalSchema from './schema-portal';
 
-const databaseUrl = process.env.DATABASE_URL;
-if (!databaseUrl) {
-  throw new Error('DATABASE_URL is missing from environment variables');
+function createDb() {
+  const databaseUrl = process.env.DATABASE_URL;
+  if (!databaseUrl) {
+    throw new Error('DATABASE_URL is missing from environment variables');
+  }
+
+  const client = postgres(databaseUrl, {
+    max: 10,
+    ssl: process.env.NODE_ENV === 'production' ? 'require' : undefined,
+  });
+
+  return drizzle(client, { schema: { ...schema, ...waSchema, ...portalSchema } });
 }
 
-export const dbFilePath = databaseUrl;
+type DbClient = ReturnType<typeof createDb>;
 
-const client = postgres(databaseUrl, {
-  max: 10,
-  ssl: process.env.NODE_ENV === 'production' ? 'require' : undefined,
+let cached: DbClient | null = null;
+
+function getDb(): DbClient {
+  if (!cached) cached = createDb();
+  return cached;
+}
+
+// The client is created lazily so that merely importing this module never
+// throws during `next build` (which evaluates every route module, even when
+// DATABASE_URL is unset in the build environment). The missing-env error
+// surfaces only when a query actually runs.
+export const db = new Proxy({} as DbClient, {
+  get(_target, prop) {
+    // Guard against Promise detection: anything probing `db.then` (e.g. an
+    // accidental `await db`) must get `undefined`, not a missing-env throw.
+    if (prop === 'then') return undefined;
+    const value = Reflect.get(getDb(), prop);
+    // Bind methods so Drizzle internals that rely on `this` keep working
+    // when called as `db.select()`, `db.insert()`, etc.
+    return typeof value === 'function' ? value.bind(getDb()) : value;
+  },
 });
 
-export const db = drizzle(client, { schema: { ...schema, ...waSchema } });
+export const dbFilePath: string = process.env.DATABASE_URL ?? '(DATABASE_URL is not set)';

@@ -1,0 +1,131 @@
+/* TipTap editor canvas. Scoped under .blog-editor so admin chrome is untouched. */
+
+.blog-editor .tiptap {
+  min-height: 420px;
+  outline: none;
+  font-size: 1.05rem;
+  line-height: 1.8;
+  color: #0b1220;
+  caret-color: #0050d0;
+}
+
+.blog-editor .tiptap > * + * {
+  margin-top: 0.75em;
+}
+
+.blog-editor .tiptap > *:first-child {
+  margin-top: 0;
+}
+
+.blog-editor .tiptap p.is-editor-empty:first-child::before,
+.blog-editor .tiptap p.is-empty::before {
+  content: attr(data-placeholder);
+  float: left;
+  height: 0;
+  pointer-events: none;
+  color: rgba(11, 18, 32, 0.35);
+}
+
+.blog-editor .tiptap h2 {
+  font-size: 1.5rem;
+  font-weight: 800;
+  line-height: 1.3;
+  margin-top: 1.75em;
+}
+
+.blog-editor .tiptap h3 {
+  font-size: 1.25rem;
+  font-weight: 700;
+  line-height: 1.4;
+  margin-top: 1.5em;
+}
+
+.blog-editor .tiptap ul,
+.blog-editor .tiptap ol {
+  padding-left: 1.5rem;
+}
+
+.blog-editor .tiptap ul {
+  list-style: disc;
+}
+
+.blog-editor .tiptap ol {
+  list-style: decimal;
+}
+
+.blog-editor .tiptap li > p {
+  margin: 0.25em 0;
+}
+
+.blog-editor .tiptap blockquote {
+  border-left: 3px solid #00c8f0;
+  padding-left: 1rem;
+  color: rgba(11, 18, 32, 0.75);
+  font-style: italic;
+}
+
+.blog-editor .tiptap pre {
+  background: #101426;
+  color: #f7f8ff;
+  border-radius: 8px;
+  padding: 1rem 1.25rem;
+  overflow-x: auto;
+  font-size: 0.875rem;
+  line-height: 1.6;
+}
+
+.blog-editor .tiptap pre code {
+  background: none;
+  padding: 0;
+  font-size: inherit;
+}
+
+.blog-editor .tiptap code:not(pre code) {
+  background: rgba(0, 80, 208, 0.08);
+  border-radius: 4px;
+  padding: 0.15em 0.4em;
+  font-size: 0.9em;
+}
+
+.blog-editor .tiptap img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 8px;
+}
+
+.blog-editor .tiptap img.ProseMirror-selectednode {
+  outline: 2px solid #0050d0;
+  outline-offset: 2px;
+}
+
+.blog-editor .tiptap hr {
+  border: none;
+  border-top: 2px dashed rgba(11, 18, 32, 0.2);
+  margin: 2em 0;
+}
+
+.blog-editor .tiptap a {
+  color: #0050d0;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+/* Custom node placeholders inside the editor canvas */
+.blog-editor .tiptap div[data-cta-button] {
+  margin: 1.5em 0;
+}
+
+.blog-editor .tiptap div[data-embed] {
+  border: 1px dashed rgba(0, 80, 208, 0.4);
+  background: rgba(0, 80, 208, 0.05);
+  border-radius: 8px;
+  padding: 1rem 1.25rem;
+  font-size: 0.875rem;
+}
+
+.blog-editor .tiptap .ProseMirror-selectednode div[data-cta-button],
+.blog-editor .tiptap div[data-cta-button].ProseMirror-selectednode {
+  outline: 2px solid #0050d0;
+  outline-offset: 2px;
+  border-radius: 4px;
+}

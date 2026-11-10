@@ -4,6 +4,8 @@ export interface SessionPayload {
   userId: number;
   email: string;
   role: string;
+  /** Admin display name. Absent on tokens issued before this field existed. */
+  name?: string;
 }
 
 export const SESSION_COOKIE = 'aq_session';
@@ -24,7 +26,12 @@ export async function verifySessionToken(token: string): Promise<SessionPayload 
     if (typeof payload.userId !== 'number' || typeof payload.email !== 'string' || typeof payload.role !== 'string') {
       return null;
     }
-    return { userId: payload.userId, email: payload.email, role: payload.role };
+    return {
+      userId: payload.userId,
+      email: payload.email,
+      role: payload.role,
+      ...(typeof payload.name === 'string' ? { name: payload.name } : {}),
+    };
   } catch {
     return null;
   }

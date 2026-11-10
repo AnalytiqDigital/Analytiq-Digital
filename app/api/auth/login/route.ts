@@ -42,7 +42,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Invalid email or password.' }, { status: 401 });
     }
 
-    await setSessionCookie({ userId: user.id, email: user.email, role: user.role });
+    await setSessionCookie({ userId: user.id, email: user.email, role: user.role, name: user.name });
 
     return NextResponse.json({ ok: true });
   } catch (err) {

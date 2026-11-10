@@ -7,6 +7,7 @@ import { services as servicesData } from '../lib/services-data';
 import { portfolioItems as portfolioData } from '../lib/portfolio-data';
 import { caseStudies as caseStudiesData } from '../lib/case-studies-data';
 import { blogPosts as blogData } from '../lib/blog-data';
+import { blogDataBlocksToTipTapDoc, renderTipTapDocToHtml, tipTapDocToText } from '../lib/blog-render';
 import { siteConfig } from '../lib/site-config';
 
 async function seed() {
@@ -111,11 +112,14 @@ async function seed() {
     const existing = await db.query.blogPosts.findFirst({ where: (t, { eq }) => eq(t.slug, b.slug) });
     if (existing) continue;
     const content = b.content.map((block) => [block.heading ? `## ${block.heading}` : '', ...block.paragraphs].filter(Boolean).join('\n\n')).join('\n\n');
+    const doc = blogDataBlocksToTipTapDoc(b.content);
     await db.insert(blogPosts).values({
       slug: b.slug,
       title: b.title,
       excerpt: b.excerpt,
-      content,
+      content: tipTapDocToText(doc) || content,
+      contentJson: doc,
+      contentHtml: renderTipTapDocToHtml(doc),
       category: 'Insights',
       status: 'published',
       publishedAt: new Date(b.datePublished),

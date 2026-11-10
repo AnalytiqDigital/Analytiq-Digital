@@ -1,0 +1,148 @@
+/* Public article body for TipTap-rendered posts. Scoped under .blog-rich. */
+
+.blog-rich {
+  font-size: 1.075rem;
+  line-height: 1.85;
+  color: var(--poly-text);
+  overflow-wrap: break-word;
+}
+
+.blog-rich > * + * {
+  margin-top: 1.25em;
+}
+
+.blog-rich > *:first-child {
+  margin-top: 0;
+}
+
+.blog-rich h1,
+.blog-rich h2,
+.blog-rich h3,
+.blog-rich h4 {
+  line-height: 1.3;
+  font-weight: 800;
+  letter-spacing: 0;
+}
+
+.blog-rich h2 {
+  font-size: 1.6rem;
+  margin-top: 2em;
+}
+
+.blog-rich h3 {
+  font-size: 1.3rem;
+  margin-top: 1.75em;
+}
+
+.blog-rich h4 {
+  font-size: 1.1rem;
+  margin-top: 1.5em;
+}
+
+.blog-rich p {
+  color: var(--poly-text);
+  opacity: 0.92;
+}
+
+.blog-rich a {
+  color: var(--poly-cyan);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.blog-rich a:hover {
+  color: var(--poly-lime);
+}
+
+.blog-rich strong {
+  font-weight: 700;
+}
+
+.blog-rich ul,
+.blog-rich ol {
+  padding-left: 1.5rem;
+}
+
+.blog-rich ul {
+  list-style: disc;
+}
+
+.blog-rich ol {
+  list-style: decimal;
+}
+
+.blog-rich li + li {
+  margin-top: 0.5em;
+}
+
+.blog-rich blockquote {
+  border-left: 3px solid var(--poly-cyan);
+  padding: 0.25rem 0 0.25rem 1.25rem;
+  font-style: italic;
+  color: var(--poly-muted);
+}
+
+.blog-rich pre {
+  background: rgba(7, 9, 20, 0.9);
+  border: 1px solid var(--poly-line);
+  border-radius: 8px;
+  padding: 1.1rem 1.25rem;
+  overflow-x: auto;
+  font-size: 0.875rem;
+  line-height: 1.65;
+}
+
+.blog-rich code:not(pre code) {
+  background: rgba(48, 231, 255, 0.12);
+  border-radius: 4px;
+  padding: 0.15em 0.4em;
+  font-size: 0.88em;
+}
+
+.blog-rich figure {
+  margin: 2em 0;
+}
+
+.blog-rich figure img,
+.blog-rich p > img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 8px;
+}
+
+.blog-rich figcaption {
+  margin-top: 0.6rem;
+  font-size: 0.875rem;
+  text-align: center;
+  color: var(--poly-muted);
+}
+
+.blog-rich hr {
+  border: none;
+  border-top: 1px solid var(--poly-line);
+  margin: 2.5em 0;
+}
+
+.blog-rich .cta-row {
+  margin: 2em 0;
+}
+
+.blog-rich .embed-wrap {
+  margin: 2em 0;
+}
+
+.blog-rich .embed-wrap iframe {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  border: 1px solid var(--poly-line);
+  border-radius: 8px;
+}
+
+.blog-rich .embed-wrap.embed-link a {
+  display: inline-block;
+  border: 1px solid var(--poly-cyan);
+  border-radius: 4px;
+  padding: 0.75rem 1.25rem;
+  text-decoration: none;
+  font-weight: 600;
+}

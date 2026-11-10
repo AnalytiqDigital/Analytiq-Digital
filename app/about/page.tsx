@@ -70,7 +70,6 @@ export default function AboutPage() {
       <Section>
         <div className="grid gap-10 lg:grid-cols-3">
           <div className="lg:col-span-2">
-            <div className="mb-8 aspect-[4/3] w-full max-w-md rounded-2xl bg-surface-off ring-1 ring-slate-200" aria-hidden="true" />
             <div className="space-y-5 leading-relaxed text-ink/80">
               <p>
                 AnalytIQ Digital is a Nigerian technology and digital transformation company based in Abuja, working with businesses and institutions on the data, software, and automation problems that quietly cost the most time and money.

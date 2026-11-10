@@ -57,7 +57,7 @@ function buildSecurityHeaders() {
     img-src 'self' data: blob: https: http://localhost:3000 http://127.0.0.1:3000 https://*.public.blob.vercel-storage.com https://lh3.googleusercontent.com https://maps.googleapis.com https://maps.gstatic.com https://vercel.live https://assets.vercel.com;
     font-src 'self' data: https://fonts.gstatic.com;
     connect-src 'self' https: http://localhost:3000 http://127.0.0.1:3000 https://*.public.blob.vercel-storage.com https://*.googleapis.com https://vercel.live https://*.pusher.com;
-    frame-src 'self' https://vercel.live;
+    frame-src 'self' https://vercel.live https://www.youtube.com https://www.youtube-nocookie.com;
     frame-ancestors 'self' https://vercel.live;
   `.replace(/\s{2,}/g, ' ').trim();
 
@@ -134,7 +134,7 @@ const nextConfig = {
       },
       {
         protocol: 'https',
-        hostname: '**.public.blob.vercel-storage.com',
+        hostname: '*.public.blob.vercel-storage.com',
         pathname: '/**',
       },
     ],
