@@ -15,7 +15,7 @@ import {
   Image as ImageIcon,
   MousePointerClick,
   Minus,
-  Youtube,
+  MonitorPlay,
   Sparkles,
   Heading2,
   Heading3,
@@ -115,7 +115,7 @@ export default function EditorToolbar({
         <MousePointerClick size={17} />
       </TBtn>
       <TBtn title="Embed a YouTube video or social post" editor={editor} onClick={callbacks.onEmbed}>
-        <Youtube size={17} />
+        <MonitorPlay size={17} />
       </TBtn>
       <TBtn title="Insert divider" editor={editor} onClick={c((ch) => ch.setHorizontalRule())}>
         <Minus size={17} />
