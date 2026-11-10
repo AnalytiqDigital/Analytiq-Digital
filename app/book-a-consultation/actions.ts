@@ -3,7 +3,16 @@
 import { Resend } from 'resend';
 import { siteConfig } from '@/lib/site-config';
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+// Created inside the action (not at module level) so that importing this
+// module during `next build` never throws when RESEND_API_KEY is unset in
+// the build environment.
+function getResend() {
+  const apiKey = process.env.RESEND_API_KEY;
+  if (!apiKey) {
+    throw new Error('RESEND_API_KEY is not configured');
+  }
+  return new Resend(apiKey);
+}
 
 export type ConsultationFormState = {
   status: 'idle' | 'success' | 'error';
@@ -70,7 +79,7 @@ export async function submitConsultationForm(
 
   try {
     const receivingEmail = process.env.CONTACT_RECEIVING_EMAIL || siteConfig.email;
-    const { error } = await resend.emails.send({
+    const { error } = await getResend().emails.send({
       // Until the domain is verified in Resend, use onboarding@resend.dev to test immediately
       from: 'AnalytIQ Consultations <onboarding@resend.dev>',
       to: [receivingEmail],

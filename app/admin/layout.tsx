@@ -2,6 +2,10 @@ import { getSession } from '@/lib/auth';
 import AdminSidebar from '@/components/admin/AdminSidebar';
 import AdminMobileHeader from '@/components/admin/AdminMobileHeader';
 
+// The dashboard is per-request (session cookie + live DB counts), so it must
+// never be statically prerendered during `next build`.
+export const dynamic = 'force-dynamic';
+
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
   const session = await getSession();
 

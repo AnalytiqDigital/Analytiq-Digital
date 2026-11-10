@@ -1,6 +1,6 @@
 .env
 .env.*
-!.env.examplenode_modules
+!.env.example
 node_modules
 
 .next/
