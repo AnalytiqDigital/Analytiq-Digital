@@ -96,12 +96,39 @@ export function coerceColumnValue(column: any, value: unknown, fieldName = 'fiel
  * Build the insert/update values for a table from a client payload: only real,
  * non-protected columns are copied, and every value is coerced to the type the
  * column expects. Throws InvalidFieldError for values that cannot be saved.
+ *
+ * Empty form inputs arrive as '' (coerced to null above). Inserting an explicit
+ * NULL into a NOT NULL column that has a DB default would violate the
+ * constraint even though the default exists — the default only applies when
+ * the column is omitted. So:
+ * - nullable column + empty → NULL (clears the field);
+ * - NOT NULL with a default + empty → the type's empty default ('' for text,
+ *   omitted for numbers/json so the DB default like 0 or [] applies);
+ * - NOT NULL without a default (required) + empty → 400 with a clear message
+ *   instead of a 500 NOT NULL violation.
  */
 export function buildRecordValues(columns: Record<string, any>, body: Record<string, unknown>): Record<string, unknown> {
   const values: Record<string, unknown> = {};
   for (const key of Object.keys(columns)) {
     if (PROTECTED_COLUMNS.has(key)) continue;
-    if (key in body) values[key] = coerceColumnValue(columns[key], body[key], key);
+    if (!(key in body)) continue;
+    const column = columns[key];
+    const coerced = coerceColumnValue(column, body[key], key);
+    if (coerced === undefined) continue;
+    if (coerced === null && column?.notNull) {
+      if (column?.hasDefault) {
+        // Optional field left empty: store the empty default so inserts
+        // succeed and edits clear the field instead of crashing.
+        if (column?.dataType === 'string') {
+          values[key] = '';
+          continue;
+        }
+        // Numbers / JSON / booleans: omit so the DB default (0, [], …) applies.
+        continue;
+      }
+      throw new InvalidFieldError(key, `"${key}" is required.`);
+    }
+    values[key] = coerced;
   }
   return values;
 }
