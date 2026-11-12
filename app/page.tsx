@@ -1,9 +1,8 @@
 import Link from 'next/link';
-import { ArrowRight, Sparkles } from 'lucide-react';
 import { buildMetadata } from '@/lib/seo';
 import { services } from '@/lib/services-data';
 import { solutions } from '@/lib/solutions-data';
-import { getPublishedCaseStudies, getPublishedPortfolio, getActiveClients, getApprovedTestimonials } from '@/lib/queries';
+import { getPortfolioPreview, getCaseStudiesPreview, getClientsPreview, getTestimonialsPreview } from '@/lib/queries';
 import Section from '@/components/Section';
 import ServiceCard from '@/components/ServiceCard';
 import SolutionCard from '@/components/SolutionCard';
@@ -13,16 +12,18 @@ import ClientLogoSlider from '@/components/ClientLogoSlider';
 import ReviewsSection from '@/components/ReviewsSection';
 import CTA from '@/components/CTA';
 import EcosystemSection from '@/components/EcosystemSection';
-import Reveal from '@/components/Reveal';
-import Magnetic from '@/components/Magnetic';
-import NeuralField from '@/components/NeuralField';
-import CinematicReveal, { StaggerWords } from '@/components/CinematicReveal';
+import CinematicHero from '@/components/CinematicHero';
+import CinematicReveal from '@/components/CinematicReveal';
 import FAQ from '@/components/FAQ';
 import JsonLd from '@/components/JsonLd';
 import { faqSchema } from '@/lib/schema';
-import { siteConfig, whatsappLink, defaultWhatsappMessage } from '@/lib/site-config';
+import { siteConfig } from '@/lib/site-config';
 
-export const dynamic = 'force-dynamic';
+// Incremental Static Regeneration: the home page content changes only when an
+// admin edits it, and each save now calls revalidatePath('/'). A 10-minute
+// window keeps visits fast (no DB round-trips per visitor) while bounding
+// staleness if a revalidation hook is ever missed.
+export const revalidate = 600;
 
 export const metadata = buildMetadata({
   title: 'AI, Software, Automation & Data Analytics',
@@ -62,75 +63,15 @@ const process = [
 
 export default async function HomePage() {
   const [portfolioItems, caseStudies, clients, testimonials] = await Promise.all([
-    getPublishedPortfolio(),
-    getPublishedCaseStudies(),
-    getActiveClients(),
-    getApprovedTestimonials(),
+    getPortfolioPreview(3),
+    getCaseStudiesPreview(),
+    getClientsPreview(),
+    getTestimonialsPreview(),
   ]);
 
   return (
     <>
-      {/* Hero */}
-      <section data-hero-field className="relative overflow-hidden bg-brand-gradient text-white">
-        <div className="pointer-events-none absolute inset-0 bg-grid-pattern bg-grid opacity-30" aria-hidden="true" />
-        <NeuralField density={1.15} />
-        <div
-          className="pointer-events-none absolute -left-24 top-10 h-72 w-72 animate-aurora rounded-full bg-accent-teal/30 blur-3xl"
-          aria-hidden="true"
-        />
-        <div
-          className="pointer-events-none absolute -right-16 bottom-0 h-80 w-80 animate-aurora-slow rounded-full bg-accent/20 blur-3xl"
-          aria-hidden="true"
-        />
-
-        <div className="container-page relative grid gap-12 py-20 sm:py-28 lg:grid-cols-2 lg:items-center">
-          <div>
-            <span className="badge-intel inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-4 py-1.5 text-xs font-semibold text-accent-light backdrop-blur-sm">
-              <Sparkles size={14} /> AI-Powered Digital Transformation
-            </span>
-            <h1 className="headline-glow mt-5 font-display text-4xl font-bold leading-tight sm:text-5xl">
-              <StaggerWords text="Websites, Software, AI & Analytics" baseDelay={150} step={95} />
-              <br />
-              <StaggerWords text="That Grow Your Business" baseDelay={625} step={95} className="text-brand" />
-            </h1>
-            <CinematicReveal delay={650} y={20}>
-              <p className="mt-5 max-w-xl text-lg leading-relaxed text-white/85">{siteConfig.positioning}</p>
-            </CinematicReveal>
-            <CinematicReveal delay={820} y={20}>
-              <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-                <Magnetic strength={22}>
-                  <Link href="/contact" className="btn-primary">
-                    Start a Project <ArrowRight size={16} className="ml-2" />
-                  </Link>
-                </Magnetic>
-                <Magnetic strength={16}>
-                  <a href={siteConfig.erpSignupUrl} className="btn-secondary">
-                    Try AnalytIQ ERP Free
-                  </a>
-                </Magnetic>
-              </div>
-            </CinematicReveal>
-          </div>
-
-          <CinematicReveal delay={500} y={44}>
-            <div className="relative">
-              <div className="ai-panel animate-float">
-                <div className="data-stream" aria-hidden="true" />
-                <div className="data-stream data-stream-slow" aria-hidden="true" />
-                <p className="eyebrow text-accent-light">What we deliver</p>
-                <ul className="mt-4 space-y-3 text-sm text-white/85">
-                  {services.slice(0, 5).map((s) => (
-                    <li key={s.slug} className="flex items-start gap-3">
-                      <span className="intel-node mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-accent-teal" />
-                      <span>{s.shortDescription}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </div>
-          </CinematicReveal>
-        </div>
-      </section>
+      <CinematicHero />
 
       <EcosystemSection />
 
@@ -204,7 +145,7 @@ export default async function HomePage() {
           </Link>
         </div>
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {portfolioItems.slice(0, 3).map((item) => (
+          {portfolioItems.map((item) => (
             <PortfolioCard key={item.slug} item={item as any} />
           ))}
         </div>

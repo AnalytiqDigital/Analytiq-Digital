@@ -45,7 +45,13 @@ export async function getGoogleReviews(): Promise<GoogleReviewsResult> {
     url.searchParams.set('fields', 'rating,user_ratings_total,reviews');
     url.searchParams.set('key', apiKey);
 
-    const res = await fetch(url.toString(), { next: { revalidate: 3600 } });
+    // Bound the external call so a slow Google API can't stall the whole
+    // home page render. On timeout/abort we fall through to the catch below
+    // and render the placeholder instead of blocking.
+    const res = await fetch(url.toString(), {
+      next: { revalidate: 3600 },
+      signal: AbortSignal.timeout(4000),
+    });
     if (!res.ok) {
       return {
         configured: true,

@@ -77,3 +77,60 @@ export async function getApprovedTestimonials() {
     where: eq(testimonials.status, 'approved'),
   });
 }
+
+/**
+ * Lightweight previews for the home page. The home page only renders card
+ * fields, so these select just those columns (skipping the large text/body
+ * columns) to keep the per-visit payload small.
+ */
+export async function getPortfolioPreview(limit = 3) {
+  return db.query.portfolioItems.findMany({
+    where: eq(portfolioItems.published, true),
+    orderBy: asc(portfolioItems.sortOrder),
+    limit,
+    columns: {
+      slug: true,
+      title: true,
+      category: true,
+      description: true,
+      technologies: true,
+      image: true,
+    },
+  });
+}
+
+export async function getCaseStudiesPreview() {
+  return db.query.caseStudies.findMany({
+    where: eq(caseStudies.published, true),
+    orderBy: desc(caseStudies.createdAt),
+    columns: {
+      slug: true,
+      title: true,
+      industry: true,
+      summary: true,
+    },
+  });
+}
+
+export async function getClientsPreview() {
+  return db.query.clients.findMany({
+    where: eq(clients.active, true),
+    orderBy: asc(clients.sortOrder),
+    columns: {
+      name: true,
+      logoUrl: true,
+    },
+  });
+}
+
+export async function getTestimonialsPreview() {
+  return db.query.testimonials.findMany({
+    where: eq(testimonials.status, 'approved'),
+    columns: {
+      name: true,
+      company: true,
+      role: true,
+      content: true,
+    },
+  });
+}
