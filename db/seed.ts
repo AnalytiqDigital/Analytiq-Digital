@@ -1,4 +1,5 @@
-import 'dotenv/config';
+import { config } from 'dotenv';
+config({ path: '.env.local' });
 import path from 'node:path';
 import bcrypt from 'bcryptjs';
 import { db, dbFilePath } from './index';
