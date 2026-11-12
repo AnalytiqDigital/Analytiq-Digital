@@ -18,6 +18,10 @@
 
 
 import { defineConfig } from 'drizzle-kit';
+import { config } from 'dotenv';
+
+// Load .env.local so `db:push` works without a manual export.
+config({ path: '.env.local' });
 
 export default defineConfig({
   schema: ['./db/schema.ts', './db/schema-whatsapp.ts', './db/schema-portal.ts'],

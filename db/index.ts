@@ -10,9 +10,12 @@ function createDb() {
     throw new Error('DATABASE_URL is missing from environment variables');
   }
 
+  // Hosted Postgres providers (Neon, Supabase, etc.) require SSL even in
+  // local dev. Only skip it for an explicit localhost URL (e.g. Docker).
+  const isLocalhost = /^(postgres(ql)?:\/\/)?(localhost|127\.0\.0\.1)/i.test(databaseUrl);
   const client = postgres(databaseUrl, {
     max: 10,
-    ssl: process.env.NODE_ENV === 'production' ? 'require' : undefined,
+    ssl: isLocalhost ? undefined : 'require',
   });
 
   return drizzle(client, { schema: { ...schema, ...waSchema, ...portalSchema } });
