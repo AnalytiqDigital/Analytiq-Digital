@@ -46,4 +46,8 @@ export const db = new Proxy({} as DbClient, {
   },
 });
 
-export const dbFilePath: string = process.env.DATABASE_URL ?? '(DATABASE_URL is not set)';
+// Evaluated lazily: dotenv may load .env.local after this module is first
+// imported (e.g. seed.ts), so reading the env here at import time goes stale.
+export function getDbFilePath(): string {
+  return process.env.DATABASE_URL ? '(DATABASE_URL is set — value hidden)' : '(DATABASE_URL is not set)';
+}

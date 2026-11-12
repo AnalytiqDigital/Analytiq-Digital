@@ -2,7 +2,7 @@ import { config } from 'dotenv';
 config({ path: '.env.local' });
 import path from 'node:path';
 import bcrypt from 'bcryptjs';
-import { db, dbFilePath } from './index';
+import { db, getDbFilePath } from './index';
 import { users, services, portfolioItems, caseStudies, blogPosts, siteSettings } from './schema';
 import { services as servicesData } from '../lib/services-data';
 import { portfolioItems as portfolioData } from '../lib/portfolio-data';
@@ -13,7 +13,7 @@ import { siteConfig } from '../lib/site-config';
 
 async function seed() {
   console.log('Seeding database...');
-  console.log(`  Database file: ${dbFilePath}`);
+  console.log(`  Database file: ${getDbFilePath()}`);
 
   // --- Admin user ---------------------------------------------------------
   const adminEmail = process.env.ADMIN_EMAIL || 'admin@analytiq.ng';
