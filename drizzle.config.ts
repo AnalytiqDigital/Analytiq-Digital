@@ -23,11 +23,18 @@ import { config } from 'dotenv';
 // Load .env.local so `db:push` works without a manual export.
 config({ path: '.env.local' });
 
+// Schema pushes need a DIRECT (5432) connection — the pooled (6543) URL
+// can't run introspection queries. Runtime keeps using DATABASE_URL.
+const pushUrl = process.env.DIRECT_URL || process.env.DATABASE_URL;
+if (!pushUrl) {
+  throw new Error('Set DATABASE_URL (and DIRECT_URL for schema pushes) in .env.local');
+}
+
 export default defineConfig({
   schema: ['./db/schema.ts', './db/schema-whatsapp.ts', './db/schema-portal.ts'],
   out: './db/migrations',
   dialect: 'postgresql',
   dbCredentials: {
-    url: process.env.DATABASE_URL!,
+    url: pushUrl,
   },
 });
