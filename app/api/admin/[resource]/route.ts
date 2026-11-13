@@ -5,6 +5,7 @@ import { getSession } from '@/lib/auth';
 import { resourceTables, isValidResource, buildRecordValues, InvalidFieldError } from '@/lib/admin-resources';
 import { hasAdminAccess, requireWriteAccess } from '@/lib/permissions';
 import { toErrorResponse } from '@/lib/route-error';
+import { revalidatePublicPages } from '@/lib/revalidate-public';
 
 export async function GET(
   _request: NextRequest,
@@ -56,6 +57,7 @@ export async function POST(
 
     try {
       const inserted = (await db.insert(table as any).values(values).returning()) as any[];
+      revalidatePublicPages(resource);
       return NextResponse.json({ data: inserted[0] }, { status: 201 });
     } catch (err) {
       if (err instanceof InvalidFieldError) return NextResponse.json({ error: err.message, field: err.field }, { status: 400 });

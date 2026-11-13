@@ -100,6 +100,7 @@ import { getSession } from '@/lib/auth';
 import { resourceTables, isValidResource, buildRecordValues, InvalidFieldError } from '@/lib/admin-resources';
 import { hasAdminAccess, requireWriteAccess } from '@/lib/permissions';
 import { toErrorResponse } from '@/lib/route-error';
+import { revalidatePublicPages } from '@/lib/revalidate-public';
 
 export async function GET(
   _request: NextRequest,
@@ -167,6 +168,7 @@ export async function PUT(
         .returning()) as any[];
 
       if (updated.length === 0) return NextResponse.json({ error: 'Not found' }, { status: 404 });
+      revalidatePublicPages(resource);
       return NextResponse.json({ data: updated[0] });
     } catch (err) {
       if (err instanceof InvalidFieldError) return NextResponse.json({ error: err.message, field: err.field }, { status: 400 });
@@ -197,6 +199,7 @@ export async function DELETE(
     const deleted = (await db.delete(table as any).where(eq(idColumn, Number(id))).returning()) as any[];
     if (deleted.length === 0) return NextResponse.json({ error: 'Not found' }, { status: 404 });
 
+    revalidatePublicPages(resource);
     return NextResponse.json({ data: deleted[0] });
   } catch (err) {
     return toErrorResponse(err, 'Delete failed.');

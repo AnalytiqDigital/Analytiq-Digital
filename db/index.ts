@@ -10,9 +10,12 @@ function createDb() {
     throw new Error('DATABASE_URL is missing from environment variables');
   }
 
+  // Hosted Postgres providers (Neon, Supabase, etc.) require SSL even in
+  // local dev. Only skip it for an explicit localhost URL (e.g. Docker).
+  const isLocalhost = /^(postgres(ql)?:\/\/)?(localhost|127\.0\.0\.1)/i.test(databaseUrl);
   const client = postgres(databaseUrl, {
     max: 10,
-    ssl: process.env.NODE_ENV === 'production' ? 'require' : undefined,
+    ssl: isLocalhost ? undefined : 'require',
   });
 
   return drizzle(client, { schema: { ...schema, ...waSchema, ...portalSchema } });
@@ -43,4 +46,8 @@ export const db = new Proxy({} as DbClient, {
   },
 });
 
-export const dbFilePath: string = process.env.DATABASE_URL ?? '(DATABASE_URL is not set)';
+// Evaluated lazily: dotenv may load .env.local after this module is first
+// imported (e.g. seed.ts), so reading the env here at import time goes stale.
+export function getDbFilePath(): string {
+  return process.env.DATABASE_URL ? '(DATABASE_URL is set — value hidden)' : '(DATABASE_URL is not set)';
+}

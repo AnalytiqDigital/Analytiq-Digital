@@ -6,7 +6,8 @@ import JsonLd from '@/components/JsonLd';
 import { breadcrumbSchema } from '@/lib/schema';
 import { getPublishedPortfolio } from '@/lib/queries';
 
-export const dynamic = 'force-dynamic';
+// ISR: admin saves revalidate this path via revalidatePublicPages.
+export const revalidate = 600;
 
 export const metadata = buildMetadata({
   title: 'Portfolio',
