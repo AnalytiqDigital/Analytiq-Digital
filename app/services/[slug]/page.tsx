@@ -45,7 +45,13 @@ export default async function ServiceDetailPage({ params }: { params: Promise<{ 
     <>
       <JsonLd
         data={[
-          serviceSchema({ name: service.name, description: service.metaDescription, path: `/services/${service.slug}` }),
+          serviceSchema({
+            name: service.name,
+            description: service.metaDescription,
+            path: `/services/${service.slug}`,
+            fromPriceNGN: service.fromPriceNGN,
+            faqPairs: [{ question: service.answerQuestion, answer: service.answerSummary }, ...service.faqs],
+          }),
           faqSchema(service.faqs),
           breadcrumbSchema([
             { name: 'Home', path: '/' },
@@ -74,6 +80,16 @@ export default async function ServiceDetailPage({ params }: { params: Promise<{ 
             <span className="inline-block text-sm font-medium text-white/80">
               <Price amountNGN={service.fromPriceNGN} />
             </span>
+          </div>
+        </CinematicReveal>
+      </Section>
+
+      {/* Answer-first summary: a quotable 2-sentence block for AI search engines. */}
+      <Section className="pb-0">
+        <CinematicReveal>
+          <div>
+            <h2 className="font-display text-2xl font-bold text-ink">{service.answerQuestion}</h2>
+            <p className="mt-3 max-w-3xl leading-relaxed text-ink/70">{service.answerSummary}</p>
           </div>
         </CinematicReveal>
       </Section>

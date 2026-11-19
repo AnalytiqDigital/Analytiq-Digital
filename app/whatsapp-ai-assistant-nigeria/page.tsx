@@ -20,6 +20,8 @@ export default function WhatsappAiAssistantNigeriaPage() {
       eyebrow="WhatsApp AI Assistant & n8n Automation"
       h1="WhatsApp AI assistant and n8n automation for Nigerian businesses"
       intro="Many customers already message your business on WhatsApp. We build an AI assistant on the WhatsApp Business Platform that answers routine questions, captures enquiries and passes conversations to your team when a human is needed, with workflows built on n8n behind it."
+      answerQuestion="Who can build an AI WhatsApp assistant in Nigeria?"
+      answerSummary="AnalytIQ Digital builds AI WhatsApp assistants on the official WhatsApp Business Platform — answering routine questions instantly, capturing enquiries, and handing off to your team when a human is needed, with n8n workflows connecting WhatsApp to your tools. Projects start from ₦400,000 including API setup."
       primaryCta={{ label: 'Book a Free Consultation', href: '/book-a-consultation' }}
       secondaryCta={{ label: 'See Service Details', href: '/services/ai-whatsapp-assistant' }}
       blocks={[

@@ -14,6 +14,10 @@ export interface LocalLandingProps {
   eyebrow: string;
   h1: string;
   intro: string;
+  /** Direct question this page answers, rendered as an answer-first H2 for AI search. */
+  answerQuestion: string;
+  /** Two-sentence quotable summary answering answerQuestion. */
+  answerSummary: string;
   primaryCta: { label: string; href: string };
   secondaryCta: { label: string; href: string };
   blocks: { heading: string; body: string; points?: string[] }[];
@@ -33,7 +37,12 @@ export default function LocalLanding(p: LocalLandingProps) {
             { name: 'Home', path: '/' },
             { name: p.breadcrumbName, path: p.path },
           ]),
-          serviceSchema({ name: p.schemaName, description: p.metaDescription, path: p.path }),
+          serviceSchema({
+            name: p.schemaName,
+            description: p.metaDescription,
+            path: p.path,
+            faqPairs: [{ question: p.answerQuestion, answer: p.answerSummary }, ...p.faqs],
+          }),
           faqSchema(p.faqs),
         ]}
       />
@@ -49,6 +58,14 @@ export default function LocalLanding(p: LocalLandingProps) {
           <Link href={p.secondaryCta.href} className="btn-secondary">
             {p.secondaryCta.label}
           </Link>
+        </div>
+      </Section>
+
+      {/* Answer-first summary: a quotable 2-sentence block for AI search engines. */}
+      <Section className="pb-0">
+        <div className="max-w-3xl">
+          <h2 className="font-display text-2xl font-bold text-ink">{p.answerQuestion}</h2>
+          <p className="mt-3 leading-relaxed text-ink/70">{p.answerSummary}</p>
         </div>
       </Section>
 

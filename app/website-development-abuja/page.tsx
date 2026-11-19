@@ -20,6 +20,8 @@ export default function WebsiteDevelopmentAbujaPage() {
       eyebrow="Website Development in Abuja"
       h1="Website developer and designer in Abuja for businesses that want to be found"
       intro="AnalytIQ Digital is an Abuja-based team that designs and builds fast, mobile-first websites for businesses across Nigeria. Whether you need a corporate site, a lead-generation site or a site that connects to your other tools, we build it so customers can find you and know what to do next."
+      answerQuestion="Who builds business websites in Abuja?"
+      answerSummary="AnalytIQ Digital is an Abuja-based team that designs and builds fast, mobile-first websites on Next.js — or WordPress when your team edits pages daily — with SEO structure, lead forms, and WhatsApp links built in from day one. Website projects start from ₦450,000 with a written scope agreed before any commitment."
       primaryCta={{ label: 'Request a Quote', href: '/book-a-consultation' }}
       secondaryCta={{ label: 'See Website Service Details', href: '/services/website-development' }}
       blocks={[

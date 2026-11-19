@@ -10,6 +10,10 @@ export interface ServiceData {
   shortDescription: string;
   metaDescription: string;
   heroSubhead: string;
+  /** Direct question this service answers, rendered as an answer-first H2 for AI search. */
+  answerQuestion: string;
+  /** Two-sentence quotable summary answering answerQuestion. */
+  answerSummary: string;
   problem: string;
   solution: string;
   benefits: string[];
@@ -33,6 +37,9 @@ export const services: ServiceData[] = [
       'Website development services in Abuja, Nigeria — modern, responsive, conversion-focused websites built on Next.js, optimised for speed and SEO.',
     heroSubhead:
       'A website that loads fast, ranks on Google, and makes it obvious what to do next — built for how your customers actually browse.',
+    answerQuestion: 'What do you get with a website from AnalytIQ Digital?',
+    answerSummary:
+      'A fast, mobile-first website built on Next.js — or WordPress when your team edits pages daily — with SEO structure, lead forms, and WhatsApp links built in from day one. Pricing starts from ₦450,000 with a written scope agreed before any commitment.',
     problem:
       'A lot of business websites in Nigeria load slowly on mobile data, bury the phone number and WhatsApp link three clicks deep, and were never structured for search engines to understand what the business actually does. Visitors leave before the page finishes loading, and the site brings in almost no organic traffic.',
     solution:
@@ -96,6 +103,9 @@ export const services: ServiceData[] = [
       'AI automation services for Nigerian businesses — connect your tools, automate repetitive tasks, and add AI where it genuinely saves time.',
     heroSubhead:
       'If someone on your team repeats the same task every day, there is usually an AI-assisted workflow waiting to take it off their plate.',
+    answerQuestion: 'What does AI automation from AnalytIQ Digital do for a business?',
+    answerSummary:
+      'It connects the tools you already use and automates repetitive work — drafting, classifying, and routing enquiries — with human review built in where it matters. Most engagements start with a process audit and one high-impact workflow, from ₦300,000.',
     problem:
       'A lot of operational time in growing businesses goes into repetitive, low-value work: sorting and responding to routine enquiries, copying information between systems, drafting the same type of message over and over, or manually triaging leads before anyone qualified sees them. It rarely feels urgent enough to fix, so it just continues.',
     solution:
@@ -152,6 +162,9 @@ export const services: ServiceData[] = [
       'Power BI dashboard consulting for Nigerian businesses in Abuja — data models, interactive dashboards, and automated reporting that replace manual spreadsheet work.',
     heroSubhead:
       'Stop rebuilding the same report every month. We build Power BI dashboards that update themselves and answer the questions your leadership actually asks.',
+    answerQuestion: 'What does a Power BI dashboard project from AnalytIQ Digital deliver?',
+    answerSummary:
+      'One shared source of truth: your Excel, POS, and accounting data modelled once and shown in live dashboards that refresh on a schedule. A focused single-department dashboard typically takes two to three weeks, from ₦350,000.',
     problem:
       'Most Nigerian SMEs and institutions run on spreadsheets that someone rebuilds by hand every week. Numbers live in different files, sales data disagrees with finance data, and by the time a report reaches management it is already out of date. Decisions get made on gut feel because the data takes too long to trust.',
     solution:
@@ -208,6 +221,9 @@ export const services: ServiceData[] = [
       'Custom software development for Nigerian businesses — web applications and internal tools built around your workflow when off-the-shelf software falls short.',
     heroSubhead:
       "When the software almost fits but forces your team to work around it, it's usually cheaper to build the piece you actually need.",
+    answerQuestion: 'When should a business choose custom software from AnalytIQ Digital?',
+    answerSummary:
+      'When off-the-shelf software forces your team into workarounds like parallel spreadsheets. We scope requirements in writing first, then build in reviewable stages — web apps, ERPs, and internal tools from ₦900,000.',
     problem:
       'Off-the-shelf software is built for a generic business, not yours. Teams end up maintaining parallel spreadsheets to cover what the software cannot do, or paying for modules they never use while still missing the one feature that matters.',
     solution:
@@ -260,6 +276,9 @@ export const services: ServiceData[] = [
       'AI WhatsApp assistant development for Nigerian businesses — automate customer service, sales enquiries, and order handling directly on WhatsApp.',
     heroSubhead:
       'Most of your customers already message you on WhatsApp. An AI assistant answers the routine ones instantly, day or night.',
+    answerQuestion: 'How does an AI WhatsApp assistant from AnalytIQ Digital work?',
+    answerSummary:
+      'It runs on the official WhatsApp Business API, answers routine questions instantly, walks customers through ordering or booking, and hands off to your staff for anything outside its scope. Setup including API connection starts from ₦400,000.',
     problem:
       'WhatsApp is often the primary sales and support channel for Nigerian businesses, but it does not scale with a human alone. Repeated questions about price, availability, and order status pile up, staff have to context-switch constantly, and enquiries that arrive after hours simply wait until morning — sometimes losing the sale.',
     solution:
@@ -316,6 +335,9 @@ export const services: ServiceData[] = [
       'Digital transformation consulting for Nigerian businesses — identify the right technology opportunities and implement practical, scoped solutions.',
     heroSubhead:
       "Not sure whether the fix is a dashboard, custom software, automation, or something simpler? That's exactly what this conversation is for.",
+    answerQuestion: 'What happens in a digital consulting engagement with AnalytIQ Digital?',
+    answerSummary:
+      'A structured review of your operations, tools, and pain points, ending in a written, prioritised roadmap with realistic cost estimates. Engagements start from ₦200,000 — and the honest answer is sometimes no new technology at all.',
     problem:
       'Many businesses know something about their operations is inefficient but are not sure what to fix first, which technology actually applies, or how to avoid overspending on the wrong solution. Vendors often push whichever product they sell rather than diagnosing the actual problem.',
     solution:

@@ -90,6 +90,16 @@ export default function DataAnalyticsPage() {
         </div>
       </Section>
 
+      {/* Answer-first summary: a quotable 2-sentence block for AI search engines. */}
+      <Section className="pb-0">
+        <div className="max-w-3xl">
+          <h2 className="font-display text-2xl font-bold text-ink">Who builds Power BI dashboards in Abuja?</h2>
+          <p className="mt-3 leading-relaxed text-ink/70">
+            AnalytIQ Digital builds Power BI dashboards for Nigerian businesses — connecting Excel, POS, and accounting data into live dashboards that refresh automatically. A focused single-department dashboard typically takes two to three weeks, starting from ₦350,000 with training included.
+          </p>
+        </div>
+      </Section>
+
       <Section>
         <div className="grid gap-6 sm:grid-cols-2">
           {offerings.map((o) => (

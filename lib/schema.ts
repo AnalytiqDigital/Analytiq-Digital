@@ -1,15 +1,19 @@
 import { siteConfig } from './site-config';
+import { services } from './services-data';
 
 export function organizationSchema() {
   return {
     '@context': 'https://schema.org',
-    '@type': 'LocalBusiness',
+    '@type': 'ProfessionalService',
     '@id': `${siteConfig.url}/#organization`,
     name: siteConfig.name,
+    alternateName: siteConfig.shortName,
     url: siteConfig.url,
     email: siteConfig.email,
+    telephone: `+${siteConfig.whatsappNumber}`,
     logo: `${siteConfig.url}/logo.png`,
     image: `${siteConfig.url}/logo.png`,
+    priceRange: '₦₦',
     founder: {
       '@type': 'Person',
       name: siteConfig.founder,
@@ -20,10 +24,40 @@ export function organizationSchema() {
       streetAddress: '20 Iko Ibrahim Way, Navy Estate, Karshi',
       addressLocality: siteConfig.city,
       addressRegion: siteConfig.region,
+      postalCode: '900110',
       addressCountry: siteConfig.countryCode,
     },
-    areaServed: ['Nigeria', 'Abuja', 'FCT'],
+    areaServed: [
+      { '@type': 'Country', name: siteConfig.country },
+      {
+        '@type': 'City',
+        name: siteConfig.city,
+        containedInPlace: { '@type': 'AdministrativeArea', name: siteConfig.region },
+      },
+    ],
     description: siteConfig.positioning,
+    knowsAbout: [
+      'Website development',
+      'Custom software development',
+      'AI workflow automation',
+      'AI WhatsApp assistants',
+      'Power BI dashboards',
+      'Data analytics',
+      'Digital transformation consulting',
+    ],
+    hasOfferCatalog: {
+      '@type': 'OfferCatalog',
+      name: `${siteConfig.name} services`,
+      itemListElement: services.map((s) => ({
+        '@type': 'Offer',
+        itemOffered: {
+          '@type': 'Service',
+          name: s.name,
+          description: s.shortDescription,
+          url: `${siteConfig.url}/services/${s.slug}`,
+        },
+      })),
+    },
     sameAs: [siteConfig.social.linkedin, siteConfig.social.x],
   };
 }
@@ -59,19 +93,51 @@ export function serviceSchema({
   name,
   description,
   path,
+  fromPriceNGN,
+  faqPairs,
 }: {
   name: string;
   description: string;
   path: string;
+  fromPriceNGN?: number;
+  /** Answer-first Q&A rendered on the page — doubled as speakable content for AI engines. */
+  faqPairs?: { question: string; answer: string }[];
 }) {
   return {
     '@context': 'https://schema.org',
     '@type': 'Service',
     name,
+    serviceType: name,
     description,
-    provider: { '@id': `${siteConfig.url}/#organization` },
+    provider: {
+      '@id': `${siteConfig.url}/#organization`,
+      '@type': 'ProfessionalService',
+      name: siteConfig.name,
+      url: siteConfig.url,
+      telephone: `+${siteConfig.whatsappNumber}`,
+    },
     areaServed: ['Nigeria', 'Abuja'],
     url: `${siteConfig.url}${path}`,
+    ...(faqPairs && faqPairs.length > 0
+      ? {
+          mainEntity: faqPairs.map((faq) => ({
+            '@type': 'Question',
+            name: faq.question,
+            acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+          })),
+        }
+      : {}),
+    ...(typeof fromPriceNGN === 'number'
+      ? {
+          offers: {
+            '@type': 'Offer',
+            priceCurrency: 'NGN',
+            price: fromPriceNGN,
+            availability: 'https://schema.org/InStock',
+            url: `${siteConfig.url}${path}`,
+          },
+        }
+      : {}),
   };
 }
 

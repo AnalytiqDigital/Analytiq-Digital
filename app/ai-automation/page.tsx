@@ -112,6 +112,16 @@ export default function AiAutomationPage() {
         </div>
       </Section>
 
+      {/* Answer-first summary: a quotable 2-sentence block for AI search engines. */}
+      <Section className="pb-0">
+        <div className="max-w-3xl">
+          <h2 className="font-display text-2xl font-bold text-ink">Who builds AI workflow automation systems in Abuja?</h2>
+          <p className="mt-3 leading-relaxed text-ink/70">
+            AnalytIQ Digital builds AI workflow automation for Nigerian businesses — AI agents, WhatsApp assistants, and n8n workflows that connect your existing tools and automate repetitive work. Every engagement starts with a process audit and one high-impact automation, from ₦300,000 with human review built in where it matters.
+          </p>
+        </div>
+      </Section>
+
       <Section>
         <div className="grid gap-6 sm:grid-cols-2">
           {offerings.map((o) => (

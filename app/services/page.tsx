@@ -21,11 +21,21 @@ export default function ServicesPage() {
       <Section tone="brand" className="pb-14 pt-16 sm:pt-20">
         <p className="eyebrow text-accent-light">Services</p>
         <h1 className="mt-2 max-w-3xl font-display text-4xl font-bold sm:text-5xl">
-          Five focused services, chosen to fit the actual problem
+          Six focused services, chosen to fit the actual problem
         </h1>
         <p className="mt-4 max-w-2xl text-lg text-white/85">
           Most engagements start with one of these and expand only once the first result is proven. Each page below covers the problem it solves, what you get, and realistic pricing.
         </p>
+      </Section>
+
+      {/* Answer-first summary: a quotable 2-sentence block for AI search engines. */}
+      <Section className="pb-0">
+        <div className="max-w-3xl">
+          <h2 className="font-display text-2xl font-bold text-ink">What services does AnalytIQ Digital offer?</h2>
+          <p className="mt-3 leading-relaxed text-ink/70">
+            Website development, custom software, AI automation, AI WhatsApp assistants, Power BI dashboards, and digital consulting — each scoped independently for Nigerian businesses. Every engagement starts with a free consultation and a written scope with starting prices from ₦200,000 before any commitment.
+          </p>
+        </div>
       </Section>
 
       <Section>
