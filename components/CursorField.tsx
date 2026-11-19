@@ -14,6 +14,10 @@ interface TrailDot {
  * it widens and brightens near interactive elements (a, button,
  * [data-magnetic]). The dot-trail intensifies with pointer velocity.
  * Fine-pointer devices only; never renders on touch; off on reduced motion.
+ *
+ * The animation loop only runs while the ring or trail is actually moving:
+ * clearing a full-viewport canvas 60x/second while the pointer is idle was
+ * the main source of visible lag across the site.
  */
 export default function CursorField() {
   const ringRef = useRef<HTMLDivElement>(null);
@@ -44,12 +48,19 @@ export default function CursorField() {
 
     const pos = { x: -100, y: -100 };
     const ringPos = { x: -100, y: -100 };
-    let last = { x: -100, y: -100 };
+    let lastX = -100;
+    let lastY = -100;
     let nearInteractive = false;
+    let appliedNear: boolean | null = null;
     let visible = false;
     const trail: TrailDot[] = [];
     let raf = 0;
     let running = true;
+    let canvasDirty = false;
+
+    const schedule = () => {
+ if (running && !raf) raf = requestAnimationFrame(frame);
+ };
 
     const onMove = (e: PointerEvent) => {
       pos.x = e.clientX;
@@ -58,32 +69,45 @@ export default function CursorField() {
         visible = true;
         ringPos.x = pos.x;
         ringPos.y = pos.y;
-        last = { ...pos };
+        lastX = pos.x;
+        lastY = pos.y;
         ring.style.opacity = '1';
       }
       const t = e.target as HTMLElement | null;
       nearInteractive = !!t?.closest?.('a, button, [data-magnetic]');
+      schedule();
     };
+
     const onLeave = () => {
       visible = false;
       ring.style.opacity = '0';
+      schedule();
     };
 
     const frame = () => {
+    raf = 0;
       if (!running) return;
 
-      // Heavy weighted follow — slow, expensive-feeling
-      ringPos.x += (pos.x - ringPos.x) * 0.16;
-      ringPos.y += (pos.y - ringPos.y) * 0.16;
-      const scale = nearInteractive ? 1.9 : 1;
-      ring.style.transform = `translate(${ringPos.x}px, ${ringPos.y}px) translate(-50%, -50%) scale(${scale})`;
+ // Heavy weighted follow — eased over frames, not through a CSS transition.
+ const dx = pos.x - ringPos.x;
+ const dy = pos.y - ringPos.y;
+ const ringMoving = Math.abs(dx) > 0.1 || Math.abs(dy) > 0.1;
+ if (ringMoving) {
+      ringPos.x += dx * 0.16;
+      ringPos.y += dy * 0.16;
+      }
+      if (ringMoving || nearInteractive !== appliedNear) {
+      ring.style.transform = `translate(${ringPos.x}px, ${ringPos.y}px) translate(-50%, -50%) scale(${nearInteractive ? 1.9 : 1})`;
       ring.style.borderColor = nearInteractive ? 'rgba(155,255,106,0.9)' : 'rgba(48,231,255,0.65)';
+      appliedNear = nearInteractive;
+ }
 
-      // Trail: spawn rate follows velocity
-      const dx = pos.x - last.x;
-      const dy = pos.y - last.y;
-      const speed = Math.sqrt(dx * dx + dy * dy);
-      last = { ...pos };
+ // Trail: spawn rate follows velocity.
+ const vx = pos.x - lastX;
+ const vy = pos.y - lastY;
+      const speed = Math.sqrt(vx * vx + vy * vy);
+      lastX = pos.x;
+      lastY = pos.y;
       if (visible && speed > 0.5) {
         const n = Math.min(3, 1 + Math.floor(speed / 14));
         for (let i = 0; i < n; i++) {
@@ -92,7 +116,10 @@ export default function CursorField() {
       }
       if (trail.length > 220) trail.splice(0, trail.length - 220);
 
+ // Only touch the canvas when something is actually drawn on it.
+      if (trail.length > 0 || canvasDirty) {
       ctx.clearRect(0, 0, w, h);
+      const cyan = nearInteractive ? '155,255,106' : '48,231,255';
       for (let i = trail.length - 1; i >= 0; i--) {
         const dot = trail[i];
         dot.age += 1;
@@ -102,35 +129,39 @@ export default function CursorField() {
           continue;
         }
         dot.y -= 0.25;
-        const cyan = nearInteractive ? '155,255,106' : '48,231,255';
         ctx.fillStyle = `rgba(${cyan},${(life * 0.55).toFixed(3)})`;
         ctx.beginPath();
         ctx.arc(dot.x, dot.y, 1.6 * life + 0.4, 0, Math.PI * 2);
         ctx.fill();
       }
+      canvasDirty = trail.length > 0;
+ }
 
-      raf = requestAnimationFrame(frame);
+ if (visible && (ringMoving || trail.length > 0)) schedule();
     };
-    raf = requestAnimationFrame(frame);
 
-    document.addEventListener('visibilitychange', () => {
+ const onVisibility = () => {
       if (document.hidden) {
         running = false;
-        cancelAnimationFrame(raf);
+        if (raf) cancelAnimationFrame(raf);
+      raf = 0;
       } else {
         running = true;
-        raf = requestAnimationFrame(frame);
+        schedule();
       }
-    });
+      };
+
+    document.addEventListener('visibilitychange', onVisibility);
     window.addEventListener('pointermove', onMove, { passive: true });
     document.documentElement.addEventListener('pointerleave', onLeave);
 
     return () => {
       running = false;
-      cancelAnimationFrame(raf);
+      if (raf) cancelAnimationFrame(raf);
       window.removeEventListener('resize', resize);
       window.removeEventListener('pointermove', onMove);
       document.documentElement.removeEventListener('pointerleave', onLeave);
+      document.removeEventListener('visibilitychange', onVisibility);
     };
   }, []);
 
@@ -144,7 +175,7 @@ export default function CursorField() {
       <div
         ref={ringRef}
         aria-hidden="true"
-        className="pointer-events-none fixed left-0 top-0 z-[91] hidden h-7 w-7 rounded-full opacity-0 transition-[border-color,opacity] duration-300 [@media(pointer:fine)]:block"
+        className="pointer-events-none fixed left-0 top-0 z-[91] hidden h-7 w-7 rounded-full opacity-0 transition-[opacity] duration-300 [@media(pointer:fine)]:block"
         style={{ border: '1.5px solid rgba(48,231,255,0.65)', boxShadow: '0 0 18px rgba(48,231,255,0.25)' }}
       />
     </>

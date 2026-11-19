@@ -284,16 +284,24 @@ export default function CinematicHero() {
   const [direction, setDirection] = useState(1);
   const [paused, setPaused] = useState(false);
   const [reduced, setReduced] = useState(false);
-  const [tilt, setTilt] = useState({ rx: 0, ry: 0 });
+  const tiltRef = useRef<HTMLDivElement>(null);
+const tiltFrame = useRef(0);
+const tiltTarget = useRef({ rx: 0, ry: 0 });
   const touchX = useRef<number | null>(null);
   const slide = SLIDES[active];
 
   useEffect(() => {
     const mq = window.matchMedia('(prefers-reduced-motion: reduce)');
-    const apply = () => setReduced(mq.matches);
+    const apply = () => {
+ setReduced(mq.matches);
+ if (mq.matches && tiltRef.current) tiltRef.current.style.transform = '';
+ };
     apply();
     mq.addEventListener('change', apply);
-    return () => mq.removeEventListener('change', apply);
+    return () => {
+ mq.removeEventListener('change', apply);
+ if (tiltFrame.current) cancelAnimationFrame(tiltFrame.current);
+ };
   }, []);
 
   const next = useCallback(() => {
@@ -323,9 +331,26 @@ export default function CinematicHero() {
     const rect = e.currentTarget.getBoundingClientRect();
     const px = (e.clientX - rect.left) / rect.width - 0.5;
     const py = (e.clientY - rect.top) / rect.height - 0.5;
-    setTilt({ rx: -py * 10, ry: px * 10 });
+    // Write the transform straight to the node, throttled to one frame.
+ // Calling setState here re-rendered the whole hero (including its
+ // canvas and inline keyframes) on every pointer move.
+ tiltTarget.current = { rx: -py * 10, ry: px * 10 };
+ if (!tiltFrame.current) {
+ tiltFrame.current = requestAnimationFrame(() => {
+ tiltFrame.current = 0;
+ if (tiltRef.current) {
+ const { rx, ry } = tiltTarget.current;
+ tiltRef.current.style.transform = `rotateX(${rx}deg) rotateY(${ry}deg)`;
+ }
+ });
+ }
   };
-  const resetTilt = () => setTilt({ rx: 0, ry: 0 });
+  const resetTilt = () => {
+ tiltTarget.current = { rx: 0, ry: 0 };
+ if (tiltFrame.current) cancelAnimationFrame(tiltFrame.current);
+ tiltFrame.current = 0;
+ if (tiltRef.current) tiltRef.current.style.transform = 'rotateX(0deg) rotateY(0deg)';
+ };
 
   return (
     <section data-hero-field aria-label="AnalytIQ Digital — websites, software, AI and analytics" className="relative overflow-hidden bg-[#0b0f19] text-white">
@@ -442,9 +467,10 @@ export default function CinematicHero() {
           onBlur={() => setPaused(false)}
         >
           <div
-            onMouseMove={handleTilt}
+            ref={tiltRef}
+ onMouseMove={handleTilt}
             onMouseLeave={resetTilt}
-            style={reduced ? undefined : { transform: `rotateX(${tilt.rx}deg) rotateY(${tilt.ry}deg)`, transformStyle: 'preserve-3d' }}
+            style={{ transformStyle: reduced ? undefined : 'preserve-3d' }}
             className="hero-tilt relative rounded-2xl border border-white/10 bg-white/5 shadow-[0_24px_80px_-24px_rgba(0,0,0,0.8)] backdrop-blur-md"
           >
             {/* Accent top edge + glow */}

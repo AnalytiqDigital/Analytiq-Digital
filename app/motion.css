@@ -68,13 +68,16 @@ li:hover .intel-node,
   text-shadow: 0 0 44px rgba(48, 231, 255, 0.22);
 }
 
-/* --- Page transition: continuous camera move --- */
+/* --- Page transition: lightweight settle.
+ Animating filter: blur() on the whole page forces a full repaint on
+ every frame and made navigation/clicks feel laggy. Opacity + transform
+ are composited instead. --- */
 @keyframes page-in {
-  0% { opacity: 0; transform: scale(0.996) translateY(10px); filter: blur(8px); }
-  100% { opacity: 1; transform: none; filter: blur(0); }
+ 0% { opacity: 0; transform: translateY(8px); }
+ 100% { opacity: 1; transform: none; }
 }
 .page-enter {
-  animation: page-in 0.8s cubic-bezier(0.22, 1, 0.36, 1) both;
+ animation: page-in 0.32s ease-out both;
 }
 
 /* --- Thinking dots (agentic "alive" state) --- */
@@ -165,6 +168,5 @@ li:hover .intel-node,
   .page-enter {
     opacity: 1 !important;
     transform: none !important;
-    filter: none !important;
   }
 }

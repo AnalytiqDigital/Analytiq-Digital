@@ -14,6 +14,8 @@ interface Particle {
 }
 
 const COLORS = ['48,231,255', '155,255,106', '138,99,255'];
+const LINK_DIST = 130;
+const LINK_BUCKETS = 4;
 
 /**
  * Living Intelligence Layer: a soft neural particle field on canvas.
@@ -21,7 +23,9 @@ const COLORS = ['48,231,255', '155,255,106', '138,99,255'];
  * scroll velocity. Cyan = nervous system, lime = energy, violet = depth.
  *
  * Performance: capped particle count (density-based, mobile-safe),
- * single rAF loop, pauses off-screen and on reduced motion.
+ * single rAF loop, batched link strokes, pauses off-screen and on
+ * reduced motion (the previous loop ran forever even after scrolling
+ * away, which compounded across the hero and service sections).
  */
 export default function NeuralField({
   className = '',
@@ -41,29 +45,20 @@ export default function NeuralField({
     if (!ctx) return;
 
     const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    // Static faint dots for reduced motion — no animation loop at all.
     const dpr = Math.min(window.devicePixelRatio || 1, 2);
 
     let w = 0;
     let h = 0;
     let particles: Particle[] = [];
     let raf = 0;
-    let running = true;
+    let onScreen = true;
 
     const mouse = { x: -9999, y: -9999, active: false };
     let scrollBoost = 0;
     let heroBoost = 0;
     let lastScrollY = window.scrollY;
 
-    const resize = () => {
-      const rect = canvas.getBoundingClientRect();
-      w = rect.width;
-      h = rect.height;
-      canvas.width = Math.max(1, Math.floor(w * dpr));
-      canvas.height = Math.max(1, Math.floor(h * dpr));
-      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-      seed();
-    };
+ const linkBuckets: number[][] = Array.from({ length: LINK_BUCKETS }, () => []);
 
     const seed = () => {
       const small = w < 640;
@@ -81,10 +76,30 @@ export default function NeuralField({
       }));
     };
 
-    const LINK_DIST = 130;
+ const resize = () => {
+ const rect = canvas.getBoundingClientRect();
+ w = rect.width;
+ h = rect.height;
+ canvas.width = Math.max(1, Math.floor(w * dpr));
+   canvas.height = Math.max(1, Math.floor(h * dpr));
+   ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+   seed();
+   if (reduced) paintStatic();
+   };
+
+   const paintStatic = () => {
+   ctx.clearRect(0, 0, w, h);
+   for (const p of particles) {
+   ctx.fillStyle = `rgba(${COLORS[p.hue]},0.35)`;
+ ctx.beginPath();
+ ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+ ctx.fill();
+ }
+ };
 
     const frame = () => {
-      if (!running) return;
+    raf = 0;
+      if (reduced || document.hidden || !onScreen) return;
       ctx.clearRect(0, 0, w, h);
 
       const energy = Math.min(1, scrollBoost + heroBoost * 0.7);
@@ -116,7 +131,9 @@ export default function NeuralField({
         if (p.y > h + 20) p.y = -20;
       }
 
-      // Links
+ // Links: collect segments into a few alpha buckets so all lines in a
+ // bucket share one stroke() call instead of one per pair.
+      for (const bucket of linkBuckets) bucket.length = 0;
       for (let i = 0; i < particles.length; i++) {
         const a = particles[i];
         for (let j = i + 1; j < particles.length; j++) {
@@ -125,15 +142,24 @@ export default function NeuralField({
           const dy = a.y - b.y;
           const d2 = dx * dx + dy * dy;
           if (d2 < LINK_DIST * LINK_DIST) {
-            const alpha = (1 - Math.sqrt(d2) / LINK_DIST) * (0.10 + energy * 0.18);
-            ctx.strokeStyle = `rgba(48,231,255,${alpha.toFixed(3)})`;
-            ctx.lineWidth = 1;
-            ctx.beginPath();
-            ctx.moveTo(a.x, a.y);
-            ctx.lineTo(b.x, b.y);
-            ctx.stroke();
+          const closeness = 1 - Math.sqrt(d2) / LINK_DIST;
+          const bucket = Math.min(LINK_BUCKETS - 1, Math.floor(closeness * LINK_BUCKETS));
+          linkBuckets[bucket].push(a.x, a.y, b.x, b.y);
           }
         }
+        }
+        ctx.lineWidth = 1;
+        for (let k = 0; k < LINK_BUCKETS; k++) {
+        const list = linkBuckets[k];
+        if (list.length === 0) continue;
+   const alpha = (((k + 0.5) / LINK_BUCKETS) * (0.1 + energy * 0.18)).toFixed(3);
+   ctx.strokeStyle = `rgba(48,231,255,${alpha})`;
+   ctx.beginPath();
+      for (let i = 0; i < list.length; i += 4) {
+      ctx.moveTo(list[i], list[i + 1]);
+      ctx.lineTo(list[i + 2], list[i + 3]);
+      }
+      ctx.stroke();
       }
 
       // Nodes
@@ -150,7 +176,13 @@ export default function NeuralField({
       raf = requestAnimationFrame(frame);
     };
 
+ const syncLoop = () => {
+ if (raf || reduced || document.hidden || !onScreen) return;
+ raf = requestAnimationFrame(frame);
+    };
+
     const onMouseMove = (e: PointerEvent) => {
+    if (!onScreen) return;
       const rect = canvas.getBoundingClientRect();
       mouse.x = e.clientX - rect.left;
       mouse.y = e.clientY - rect.top;
@@ -172,17 +204,28 @@ export default function NeuralField({
       lastScrollY = y;
     };
     const onVisibility = () => {
-      const hidden = document.hidden;
-      if (hidden) {
-        running = false;
-        cancelAnimationFrame(raf);
-      } else if (!reduced) {
-        running = true;
-        raf = requestAnimationFrame(frame);
+    if (document.hidden) {
+    if (raf) cancelAnimationFrame(raf);
+    raf = 0;
+      } else {
+      syncLoop();
       }
     };
 
     resize();
+    const observer = typeof IntersectionObserver !== 'undefined'
+    ? new IntersectionObserver(([entry]) => {
+    onScreen = entry.isIntersecting;
+    if (!onScreen) {
+    if (raf) cancelAnimationFrame(raf);
+   raf = 0;
+   } else {
+   syncLoop();
+    }
+    }, { rootMargin: '100px' })
+    : null;
+    observer?.observe(canvas);
+
     window.addEventListener('resize', resize);
     if (interactive) {
       window.addEventListener('pointermove', onMouseMove, { passive: true });
@@ -193,20 +236,14 @@ export default function NeuralField({
 
     if (reduced) {
       // Paint one static frame, no loop.
-      ctx.clearRect(0, 0, w, h);
-      for (const p of particles) {
-        ctx.fillStyle = `rgba(${COLORS[p.hue]},0.35)`;
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-        ctx.fill();
-      }
+      paintStatic();
     } else {
-      raf = requestAnimationFrame(frame);
+    syncLoop();
     }
 
     return () => {
-      running = false;
-      cancelAnimationFrame(raf);
+    if (raf) cancelAnimationFrame(raf);
+      observer?.disconnect();
       window.removeEventListener('resize', resize);
       window.removeEventListener('pointermove', onMouseMove);
       canvas.removeEventListener('pointerleave', onMouseLeave);
