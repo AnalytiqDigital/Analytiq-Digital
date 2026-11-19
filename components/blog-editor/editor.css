@@ -1,12 +1,29 @@
-/* TipTap editor canvas. Scoped under .blog-editor so admin chrome is untouched. */
+/* TipTap editor canvas. Scoped under .blog-editor so admin chrome is untouched.
+ *
+ * The site runs the dark "polyphonic" theme, so the canvas has to be dark too:
+ * `app/globals.css` repaints `.bg-white` to `--poly-ink`, and the article these
+ * posts publish to is dark (components/BlogRichContent.css). Hard-coding the
+ * old light-theme colours here (#0b1220 text on the repainted dark canvas) is
+ * what made pasted text — and every paragraph — invisible.
+ */
+
+.blog-editor {
+  background-color: var(--poly-panel) !important;
+  border-color: var(--poly-line) !important;
+  color: var(--poly-text);
+}
 
 .blog-editor .tiptap {
   min-height: 420px;
   outline: none;
   font-size: 1.05rem;
   line-height: 1.8;
-  color: #0b1220;
-  caret-color: #0050d0;
+  color: var(--poly-text);
+  caret-color: var(--poly-cyan);
+}
+
+.blog-editor .tiptap ::selection {
+  background: rgba(48, 231, 255, 0.28);
 }
 
 .blog-editor .tiptap > * + * {
@@ -23,7 +40,8 @@
   float: left;
   height: 0;
   pointer-events: none;
-  color: rgba(11, 18, 32, 0.35);
+  color: var(--poly-muted);
+  opacity: 0.7;
 }
 
 .blog-editor .tiptap h2 {
@@ -58,15 +76,16 @@
 }
 
 .blog-editor .tiptap blockquote {
-  border-left: 3px solid #00c8f0;
+  border-left: 3px solid var(--poly-cyan);
   padding-left: 1rem;
-  color: rgba(11, 18, 32, 0.75);
+  color: var(--poly-muted);
   font-style: italic;
 }
 
 .blog-editor .tiptap pre {
-  background: #101426;
-  color: #f7f8ff;
+  background: rgba(7, 9, 20, 0.9);
+  border: 1px solid var(--poly-line);
+  color: var(--poly-text);
   border-radius: 8px;
   padding: 1rem 1.25rem;
   overflow-x: auto;
@@ -81,7 +100,7 @@
 }
 
 .blog-editor .tiptap code:not(pre code) {
-  background: rgba(0, 80, 208, 0.08);
+  background: rgba(48, 231, 255, 0.12);
   border-radius: 4px;
   padding: 0.15em 0.4em;
   font-size: 0.9em;
@@ -94,18 +113,18 @@
 }
 
 .blog-editor .tiptap img.ProseMirror-selectednode {
-  outline: 2px solid #0050d0;
+  outline: 2px solid var(--poly-cyan);
   outline-offset: 2px;
 }
 
 .blog-editor .tiptap hr {
   border: none;
-  border-top: 2px dashed rgba(11, 18, 32, 0.2);
+  border-top: 2px dashed var(--poly-line);
   margin: 2em 0;
 }
 
 .blog-editor .tiptap a {
-  color: #0050d0;
+  color: var(--poly-cyan);
   text-decoration: underline;
   text-underline-offset: 2px;
 }
@@ -116,8 +135,8 @@
 }
 
 .blog-editor .tiptap div[data-embed] {
-  border: 1px dashed rgba(0, 80, 208, 0.4);
-  background: rgba(0, 80, 208, 0.05);
+  border: 1px dashed rgba(48, 231, 255, 0.4);
+  background: rgba(48, 231, 255, 0.06);
   border-radius: 8px;
   padding: 1rem 1.25rem;
   font-size: 0.875rem;
@@ -125,7 +144,10 @@
 
 .blog-editor .tiptap .ProseMirror-selectednode div[data-cta-button],
 .blog-editor .tiptap div[data-cta-button].ProseMirror-selectednode {
-  outline: 2px solid #0050d0;
+  outline: 2px solid var(--poly-cyan);
   outline-offset: 2px;
   border-radius: 4px;
 }
+
+/* Text colours set from the toolbar (`.textStyle` mark) are stored inline so
+ * they survive into the published article; nothing needed here. */

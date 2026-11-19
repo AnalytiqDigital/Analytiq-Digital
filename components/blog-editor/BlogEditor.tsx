@@ -11,8 +11,9 @@ import EditorToolbar from './EditorToolbar';
 import SlashMenu from './SlashMenu';
 import AiPanel, { type AiMode, type MetaResult } from './AiPanel';
 import { CtaDialog, EmbedDialog, ImageDialog, LinkDialog } from './EditorDialogs';
-import { CtaButton, Embed, RichImage } from './extensions';
+import { CtaButton, Embed, RichImage, TextColor } from './extensions';
 import { uploadImage } from './upload';
+import { stripPastedTextColors } from '@/lib/blog-editor-paste';
 import { legacyContentToTipTapDoc, tipTapDocToText } from '@/lib/blog-render';
 import { fetchJson } from '@/lib/fetch-json';
 import './editor.css';
@@ -147,12 +148,17 @@ export default function BlogEditor({
         RichImage.configure({ inline: false, allowBase64: false }),
         Placeholder.configure({ placeholder: 'Start writing… Type / for blocks.' }),
         Underline,
+        TextColor,
         CtaButton,
         Embed,
       ],
       content: initialDoc as never,
       editorProps: {
         attributes: { class: 'blog-editor-canvas' },
+        // Pasted colours used to be the only way colour entered a post, and
+        // Word/Docs default to near-black — invisible on this dark canvas.
+        // Keep the formatting, drop the inherited colour.
+        transformPastedHTML: (html: string) => stripPastedTextColors(html),
         handlePaste(view: any, event: ClipboardEvent) {
           const items = Array.from(event.clipboardData?.items ?? []);
           const imageItem = items.find((i) => i.type.startsWith('image/'));
@@ -391,10 +397,14 @@ export default function BlogEditor({
           onCta: () => setDialog({ kind: 'cta' }),
           onEmbed: () => setDialog({ kind: 'embed' }),
           onOpenAi: () => openAiPreset(),
+          onClearFormatting: () => editor?.chain().focus().unsetAllMarks().clearNodes().run(),
         }}
       />
 
-      <div ref={canvasRef} className="blog-editor relative rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-8" style={{ minHeight: 460 }}>
+      {/* .blog-editor paints the canvas from the dark theme — no `bg-white`
+          here: globals.css would repaint it and the old canvas CSS left the
+          text near-black on that dark background. */}
+      <div ref={canvasRef} className="blog-editor relative rounded-2xl border border-slate-200 p-5 shadow-sm sm:p-8" style={{ minHeight: 460 }}>
         <EditorContent editor={editor} />
         <SlashMenu
           editor={editor}

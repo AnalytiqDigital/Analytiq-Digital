@@ -43,6 +43,20 @@ export function safeUrl(url: unknown): string | null {
   return null;
 }
 
+/**
+ * Text colours come from the editor's swatches, but the renderer is the last
+ * line of defence before `dangerouslySetInnerHTML`. Only accept hex and simple
+ * rgb()/hsl() values — no quotes, brackets or semicolons that could break out
+ * of the style attribute.
+ */
+export function safeColor(value: unknown): string | null {
+  if (typeof value !== 'string') return null;
+  const color = value.trim();
+  if (/^#(?:[0-9a-f]{3}|[0-9a-f]{4}|[0-9a-f]{6}|[0-9a-f]{8})$/i.test(color)) return color;
+  if (/^(?:rgb|hsl)a?\(\s*[\d a-z.,%/]+\)$/i.test(color)) return color;
+  return null;
+}
+
 function renderMarks(node: TipTapNode): string {
   let inner = escapeHtml(node.text);
   for (const mark of node.marks || []) {
@@ -62,6 +76,11 @@ function renderMarks(node: TipTapNode): string {
       case 'code':
         inner = `<code>${inner}</code>`;
         break;
+      case 'textStyle': {
+        const color = safeColor(mark.attrs?.color);
+        inner = color ? `<span style="color: ${escapeHtml(color)}">${inner}</span>` : inner;
+        break;
+      }
       case 'link': {
         const href = safeUrl(mark.attrs?.href);
         inner = href

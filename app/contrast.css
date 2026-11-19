@@ -46,6 +46,44 @@ table {
   border-color: var(--poly-line);
 }
 
+/*
+ * Hover states.
+ *
+ * The rules above only match the *base* utility (`.bg-white`), but Tailwind
+ * emits the hover variants as their own classes (`.hover\:bg-surface-off`), so
+ * they kept their light-theme colours. `surface-off` is #F4F8FC and `gray-50`
+ * is #F9FAFB — both effectively white — which painted a white hover background
+ * under the white text this file forces. On the admin sidebar (and every other
+ * `hover:bg-surface-off` menu, table row or picker option) the label vanished
+ * on hover. Map those hover backgrounds into the dark palette instead.
+ */
+:is(
+  .hover\:bg-white:hover,
+  .hover\:bg-surface:hover,
+  .hover\:bg-surface-off:hover,
+  .hover\:bg-surface-off\/60:hover,
+  .hover\:bg-slate-50:hover,
+  .hover\:bg-slate-100:hover,
+  .hover\:bg-gray-50:hover,
+  .hover\:bg-gray-100:hover
+) {
+  background-color: var(--poly-panel-soft) !important;
+}
+
+:is(.hover\:bg-red-50:hover, .hover\:bg-red-100:hover) {
+  background-color: rgba(248, 113, 113, 0.16) !important;
+}
+
+.hover\:text-red-700:hover,
+.hover\:text-red-600:hover {
+  color: #fca5a5 !important;
+}
+
+/* `brand` is #0050D0 — unreadable as hover text on a dark panel. */
+.hover\:text-brand:hover {
+  color: var(--poly-cyan) !important;
+}
+
 :is(.text-red-700, .text-red-600) {
   color: #fca5a5 !important;
 }
